@@ -1,8 +1,8 @@
-package org.example.gainzone.dto;
+package org.example.gainzone.dto.response;
 
 import java.math.BigDecimal;
 
-public record ProductDTO(
+public record ProductResponse(
         Long id,
         String name,
         String description,

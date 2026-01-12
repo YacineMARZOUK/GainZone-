@@ -1,7 +1,6 @@
-package org.example.gainzone.dto;
+package org.example.gainzone.dto.request;
 
-public record TrainingProgramDTO(
-        Long id,
+public record TrainingProgramRequest(
         String name,
         String description,
         String frequency,

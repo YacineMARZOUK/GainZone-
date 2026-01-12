@@ -1,9 +1,8 @@
-package org.example.gainzone.dto;
+package org.example.gainzone.dto.request;
 
 import java.time.LocalDateTime;
 
-public record ActivityDTO(
-        Long id,
+public record ActivityRequest(
         String name,
         String description,
         String type,

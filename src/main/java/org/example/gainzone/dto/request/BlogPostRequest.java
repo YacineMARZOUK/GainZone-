@@ -1,9 +1,8 @@
-package org.example.gainzone.dto;
+package org.example.gainzone.dto.request;
 
 import java.time.LocalDateTime;
 
-public record BlogPostDTO(
-        Long id,
+public record BlogPostRequest(
         String title,
         String content,
         LocalDateTime publishedAt,
