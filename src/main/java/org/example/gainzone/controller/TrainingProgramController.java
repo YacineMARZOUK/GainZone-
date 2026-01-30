@@ -1,0 +1,48 @@
+package org.example.gainzone.controller;
+
+import lombok.RequiredArgsConstructor;
+import org.example.gainzone.dto.request.TrainingProgramRequest;
+import org.example.gainzone.dto.response.TrainingProgramResponse;
+import org.example.gainzone.service.TrainingProgramService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/api/training-programs")
+@RequiredArgsConstructor
+public class TrainingProgramController {
+
+    private final TrainingProgramService trainingProgramService;
+
+    @PostMapping
+    public ResponseEntity<TrainingProgramResponse> createTrainingProgram(
+            @RequestBody TrainingProgramRequest trainingProgramRequest) {
+        return new ResponseEntity<>(trainingProgramService.createTrainingProgram(trainingProgramRequest),
+                HttpStatus.CREATED);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<TrainingProgramResponse> updateTrainingProgram(@PathVariable Long id,
+            @RequestBody TrainingProgramRequest trainingProgramRequest) {
+        return ResponseEntity.ok(trainingProgramService.updateTrainingProgram(id, trainingProgramRequest));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteTrainingProgram(@PathVariable Long id) {
+        trainingProgramService.deleteTrainingProgram(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping
+    public ResponseEntity<List<TrainingProgramResponse>> getAllTrainingPrograms() {
+        return ResponseEntity.ok(trainingProgramService.getAllTrainingPrograms());
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<TrainingProgramResponse> getTrainingProgramById(@PathVariable Long id) {
+        return ResponseEntity.ok(trainingProgramService.getTrainingProgramById(id));
+    }
+}
