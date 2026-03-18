@@ -1,0 +1,131 @@
+﻿[INFO] Scanning for projects...
+[INFO] 
+[INFO] ------------------------< org.example:GainZone >------------------------
+[INFO] Building GainZone 0.0.1-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] >>> spring-boot:3.2.4:run (default-cli) > test-compile @ GainZone >>>
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ GainZone ---
+[INFO] Copying 1 resource from src\main\resources to target\classes
+[INFO] Copying 0 resource from src\main\resources to target\classes
+[INFO] 
+[INFO] --- compiler:3.11.0:compile (default-compile) @ GainZone ---
+[INFO] Nothing to compile - all classes are up to date
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ GainZone ---
+[INFO] skip non existing resourceDirectory C:\Users\BeeClick\Desktop\YouCode\GainZone-\src\test\resources
+[INFO] 
+[INFO] --- compiler:3.11.0:testCompile (default-testCompile) @ GainZone ---
+[INFO] Nothing to compile - all classes are up to date
+[INFO] 
+[INFO] <<< spring-boot:3.2.4:run (default-cli) < test-compile @ GainZone <<<
+[INFO] 
+[INFO] 
+[INFO] --- spring-boot:3.2.4:run (default-cli) @ GainZone ---
+[INFO] Attaching agents: []
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+ :: Spring Boot ::                (v3.2.4)
+
+2026-03-18T14:30:24.096Z  INFO 126448 --- [           main] o.example.gainzone.GainZoneApplication   : Starting GainZoneApplication using Java 17.0.18 with PID 126448 (C:\Users\BeeClick\Desktop\YouCode\GainZone-\target\classes started by BeeClick in C:\Users\BeeClick\Desktop\YouCode\GainZone-)
+2026-03-18T14:30:24.098Z  INFO 126448 --- [           main] o.example.gainzone.GainZoneApplication   : No active profile set, falling back to 1 default profile: "default"
+2026-03-18T14:30:24.743Z  INFO 126448 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-03-18T14:30:24.889Z  INFO 126448 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 142 ms. Found 5 JPA repository interfaces.
+2026-03-18T14:30:25.332Z  INFO 126448 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2026-03-18T14:30:25.342Z  INFO 126448 --- [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-03-18T14:30:25.342Z  INFO 126448 --- [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.19]
+2026-03-18T14:30:25.395Z  INFO 126448 --- [           main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2026-03-18T14:30:25.396Z  INFO 126448 --- [           main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1249 ms
+2026-03-18T14:30:25.430Z  INFO 126448 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-03-18T14:30:25.584Z  INFO 126448 --- [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection conn0: url=jdbc:h2:mem:gainzone_test user=SA
+2026-03-18T14:30:25.586Z  INFO 126448 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-03-18T14:30:25.593Z  INFO 126448 --- [           main] o.s.b.a.h2.H2ConsoleAutoConfiguration    : H2 console available at '/h2-console'. Database available at 'jdbc:h2:mem:gainzone_test'
+2026-03-18T14:30:25.687Z  INFO 126448 --- [           main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-03-18T14:30:25.729Z  INFO 126448 --- [           main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.4.4.Final
+2026-03-18T14:30:25.761Z  INFO 126448 --- [           main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2026-03-18T14:30:25.921Z  INFO 126448 --- [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-03-18T14:30:25.953Z  WARN 126448 --- [           main] org.hibernate.orm.deprecation            : HHH90000025: H2Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-03-18T14:30:26.732Z  INFO 126448 --- [           main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-03-18T14:30:26.783Z  INFO 126448 --- [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-03-18T14:30:28.686Z  WARN 126448 --- [           main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-03-18T14:30:28.945Z  INFO 126448 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path ''
+2026-03-18T14:30:28.954Z  INFO 126448 --- [           main] o.example.gainzone.GainZoneApplication   : Started GainZoneApplication in 5.154 seconds (process running for 5.448)
+2026-03-18T14:30:28.963Z  INFO 126448 --- [           main] o.e.gainzone.runner.TestOllamaRunner     : ============== TEST OLLAMA ==============
+2026-03-18T14:30:28.963Z  INFO 126448 --- [           main] o.e.gainzone.runner.TestOllamaRunner     : CrÚation d'un utilisateur de test pour tester Ollama Llava...
+2026-03-18T14:30:29.007Z  INFO 126448 --- [           main] o.e.gainzone.runner.TestOllamaRunner     : Lancement de l'analyse avec Ollama pour l'utilisateur ID: 1
+15:9: '"..."' came as a complete surprise to me
+2026-03-18T14:30:29.161Z  WARN 126448 --- [           main] o.e.g.s.i.MorphologyAnalysisServiceImpl  : Impossible de dÚcoder l'image Base64 de l'utilisateur 1
+15:9: '"..."' came as a complete surprise to me
+2026-03-18T14:30:29.167Z ERROR 126448 --- [           main] o.e.g.s.i.MorphologyAnalysisServiceImpl  : Erreur lors de l'appel Ó l'IA Ollama : The template string is not valid.
+
+java.lang.IllegalArgumentException: The template string is not valid.
+	at org.springframework.ai.chat.prompt.PromptTemplate.<init>(PromptTemplate.java:86) ~[spring-ai-core-1.0.0-M5.jar:1.0.0-M5]
+	at org.springframework.ai.chat.client.advisor.api.AdvisedRequest.toPrompt(AdvisedRequest.java:171) ~[spring-ai-core-1.0.0-M5.jar:1.0.0-M5]
+	at org.springframework.ai.chat.client.DefaultChatClient$DefaultChatClientRequestSpec$1.aroundCall(DefaultChatClient.java:675) ~[spring-ai-core-1.0.0-M5.jar:1.0.0-M5]
+	at org.springframework.ai.chat.client.advisor.DefaultAroundAdvisorChain.lambda$nextAroundCall$1(DefaultAroundAdvisorChain.java:98) ~[spring-ai-core-1.0.0-M5.jar:1.0.0-M5]
+	at io.micrometer.observation.Observation.observe(Observation.java:565) ~[micrometer-observation-1.12.4.jar:1.12.4]
+	at org.springframework.ai.chat.client.advisor.DefaultAroundAdvisorChain.nextAroundCall(DefaultAroundAdvisorChain.java:98) ~[spring-ai-core-1.0.0-M5.jar:1.0.0-M5]
+	at org.springframework.ai.chat.client.DefaultChatClient$DefaultCallResponseSpec.doGetChatResponse(DefaultChatClient.java:488) ~[spring-ai-core-1.0.0-M5.jar:1.0.0-M5]
+	at org.springframework.ai.chat.client.DefaultChatClient$DefaultCallResponseSpec.lambda$doGetObservableChatResponse$1(DefaultChatClient.java:477) ~[spring-ai-core-1.0.0-M5.jar:1.0.0-M5]
+	at io.micrometer.observation.Observation.observe(Observation.java:565) ~[micrometer-observation-1.12.4.jar:1.12.4]
+	at org.springframework.ai.chat.client.DefaultChatClient$DefaultCallResponseSpec.doGetObservableChatResponse(DefaultChatClient.java:477) ~[spring-ai-core-1.0.0-M5.jar:1.0.0-M5]
+	at org.springframework.ai.chat.client.DefaultChatClient$DefaultCallResponseSpec.doSingleWithBeanOutputConverter(DefaultChatClient.java:451) ~[spring-ai-core-1.0.0-M5.jar:1.0.0-M5]
+	at org.springframework.ai.chat.client.DefaultChatClient$DefaultCallResponseSpec.entity(DefaultChatClient.java:446) ~[spring-ai-core-1.0.0-M5.jar:1.0.0-M5]
+	at org.example.gainzone.service.impl.MorphologyAnalysisServiceImpl.generatePlanFromAI(MorphologyAnalysisServiceImpl.java:104) ~[classes/:na]
+	at org.example.gainzone.service.impl.MorphologyAnalysisServiceImpl.analyzeMorphology(MorphologyAnalysisServiceImpl.java:42) ~[classes/:na]
+	at org.example.gainzone.runner.TestOllamaRunner.run(TestOllamaRunner.java:56) ~[classes/:na]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[na:na]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77) ~[na:na]
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:569) ~[na:na]
+	at org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:351) ~[spring-aop-6.1.5.jar:6.1.5]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.invokeJoinpoint(ReflectiveMethodInvocation.java:196) ~[spring-aop-6.1.5.jar:6.1.5]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:163) ~[spring-aop-6.1.5.jar:6.1.5]
+	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.proceed(CglibAopProxy.java:765) ~[spring-aop-6.1.5.jar:6.1.5]
+	at org.springframework.transaction.interceptor.TransactionInterceptor$1.proceedWithInvocation(TransactionInterceptor.java:123) ~[spring-tx-6.1.5.jar:6.1.5]
+	at org.springframework.transaction.interceptor.TransactionAspectSupport.invokeWithinTransaction(TransactionAspectSupport.java:392) ~[spring-tx-6.1.5.jar:6.1.5]
+	at org.springframework.transaction.interceptor.TransactionInterceptor.invoke(TransactionInterceptor.java:119) ~[spring-tx-6.1.5.jar:6.1.5]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184) ~[spring-aop-6.1.5.jar:6.1.5]
+	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.proceed(CglibAopProxy.java:765) ~[spring-aop-6.1.5.jar:6.1.5]
+	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:717) ~[spring-aop-6.1.5.jar:6.1.5]
+	at org.example.gainzone.runner.TestOllamaRunner$$SpringCGLIB$$0.run(<generated>) ~[classes/:na]
+	at org.springframework.boot.SpringApplication.lambda$callRunner$5(SpringApplication.java:790) ~[spring-boot-3.2.4.jar:3.2.4]
+	at org.springframework.util.function.ThrowingConsumer$1.acceptWithException(ThrowingConsumer.java:83) ~[spring-core-6.1.5.jar:6.1.5]
+	at org.springframework.util.function.ThrowingConsumer.accept(ThrowingConsumer.java:60) ~[spring-core-6.1.5.jar:6.1.5]
+	at org.springframework.util.function.ThrowingConsumer$1.accept(ThrowingConsumer.java:88) ~[spring-core-6.1.5.jar:6.1.5]
+	at org.springframework.boot.SpringApplication.callRunner(SpringApplication.java:798) ~[spring-boot-3.2.4.jar:3.2.4]
+	at org.springframework.boot.SpringApplication.callRunner(SpringApplication.java:789) ~[spring-boot-3.2.4.jar:3.2.4]
+	at org.springframework.boot.SpringApplication.lambda$callRunners$3(SpringApplication.java:774) ~[spring-boot-3.2.4.jar:3.2.4]
+	at java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.accept(ForEachOps.java:183) ~[na:na]
+	at java.base/java.util.stream.SortedOps$SizedRefSortingSink.end(SortedOps.java:357) ~[na:na]
+	at java.base/java.util.stream.AbstractPipeline.copyInto(AbstractPipeline.java:510) ~[na:na]
+	at java.base/java.util.stream.AbstractPipeline.wrapAndCopyInto(AbstractPipeline.java:499) ~[na:na]
+	at java.base/java.util.stream.ForEachOps$ForEachOp.evaluateSequential(ForEachOps.java:150) ~[na:na]
+	at java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.evaluateSequential(ForEachOps.java:173) ~[na:na]
+	at java.base/java.util.stream.AbstractPipeline.evaluate(AbstractPipeline.java:234) ~[na:na]
+	at java.base/java.util.stream.ReferencePipeline.forEach(ReferencePipeline.java:596) ~[na:na]
+	at org.springframework.boot.SpringApplication.callRunners(SpringApplication.java:774) ~[spring-boot-3.2.4.jar:3.2.4]
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:341) ~[spring-boot-3.2.4.jar:3.2.4]
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1354) ~[spring-boot-3.2.4.jar:3.2.4]
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1343) ~[spring-boot-3.2.4.jar:3.2.4]
+	at org.example.gainzone.GainZoneApplication.main(GainZoneApplication.java:10) ~[classes/:na]
+Caused by: org.stringtemplate.v4.compiler.STException: null
+	at org.stringtemplate.v4.compiler.Compiler.reportMessageAndThrowSTException(Compiler.java:224) ~[ST4-4.3.4.jar:na]
+	at org.stringtemplate.v4.compiler.Compiler.compile(Compiler.java:154) ~[ST4-4.3.4.jar:na]
+	at org.stringtemplate.v4.STGroup.compile(STGroup.java:514) ~[ST4-4.3.4.jar:na]
+	at org.stringtemplate.v4.ST.<init>(ST.java:162) ~[ST4-4.3.4.jar:na]
+	at org.stringtemplate.v4.ST.<init>(ST.java:156) ~[ST4-4.3.4.jar:na]
+	at org.springframework.ai.chat.prompt.PromptTemplate.<init>(PromptTemplate.java:80) ~[spring-ai-core-1.0.0-M5.jar:1.0.0-M5]
+	... 49 common frames omitted
+
+2026-03-18T14:30:29.171Z  INFO 126448 --- [           main] o.e.g.s.i.MorphologyAnalysisServiceImpl  : Utilisation du programme fallback de secours pour l'utilisateur...
+2026-03-18T14:30:29.171Z  INFO 126448 --- [           main] o.e.gainzone.runner.TestOllamaRunner     : RÚponse de LLava reþue avec succÞs : 
+AITrainingPlanResponse[name=Programme Sauvegarde (IA Indisponible), description=Ceci est un programme gÚnÚrique. Nos serveurs d'analyse morphologique sont surchargÚs., frequency=3 fois par semaine, durationWeeks=4, exercises=[ExerciseDto[name=Pompes, sets=3, reps=15], ExerciseDto[name=Squats, sets=4, reps=12], ExerciseDto[name=Gainage, sets=3, reps=60]]]
+2026-03-18T14:30:29.174Z  INFO 126448 --- [           main] o.e.gainzone.runner.TestOllamaRunner     : =========================================

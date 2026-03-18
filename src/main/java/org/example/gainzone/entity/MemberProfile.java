@@ -17,6 +17,8 @@ import org.example.gainzone.enums.Goal; // I might need a Goal enum too based on
 @AllArgsConstructor
 public class MemberProfile extends BaseEntity {
 
+    private Integer age;
+    private String gender;
     private Double weight;
     private Double height;
 
@@ -24,7 +26,7 @@ public class MemberProfile extends BaseEntity {
     private Goal goal;
 
     private String fitnessLevel;
-    private String photoUrl;
+    private String profileImageUrl;
 
     @OneToOne(mappedBy = "memberProfile")
     private User user;

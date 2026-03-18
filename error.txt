@@ -1,0 +1,33 @@
+﻿[INFO] Scanning for projects...
+[INFO] 
+[INFO] ------------------------< org.example:GainZone >------------------------
+[INFO] Building GainZone 0.0.1-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- clean:3.3.2:clean (default-clean) @ GainZone ---
+[INFO] Deleting C:\Users\BeeClick\Desktop\YouCode\GainZone-\target
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ GainZone ---
+[INFO] Copying 1 resource from src\main\resources to target\classes
+[INFO] Copying 0 resource from src\main\resources to target\classes
+[INFO] 
+[INFO] --- compiler:3.11.0:compile (default-compile) @ GainZone ---
+[INFO] Changes detected - recompiling the module! :source
+[INFO] Compiling 45 source files with javac [debug release 17] to target\classes
+[WARNING] /C:/Users/BeeClick/Desktop/YouCode/GainZone-/src/main/java/org/example/gainzone/mapper/UserMapper.java:[14,10] Unmapped target properties: "id, createdAt, updatedAt, memberProfile".
+[WARNING] /C:/Users/BeeClick/Desktop/YouCode/GainZone-/src/main/java/org/example/gainzone/mapper/UserMapper.java:[20,10] Unmapped target properties: "id, createdAt, updatedAt, memberProfile".
+[WARNING] /C:/Users/BeeClick/Desktop/YouCode/GainZone-/src/main/java/org/example/gainzone/mapper/ProductMapper.java:[14,13] Unmapped target properties: "id, createdAt, updatedAt".
+[WARNING] /C:/Users/BeeClick/Desktop/YouCode/GainZone-/src/main/java/org/example/gainzone/mapper/ProductMapper.java:[20,10] Unmapped target properties: "id, createdAt, updatedAt".
+[WARNING] /C:/Users/BeeClick/Desktop/YouCode/GainZone-/src/main/java/org/example/gainzone/mapper/TrainingProgramMapper.java:[14,21] Unmapped target properties: "id, createdAt, updatedAt, coach, member".
+[WARNING] /C:/Users/BeeClick/Desktop/YouCode/GainZone-/src/main/java/org/example/gainzone/mapper/TrainingProgramMapper.java:[16,29] Unmapped target properties: "coachId, coachName, memberId".
+[WARNING] /C:/Users/BeeClick/Desktop/YouCode/GainZone-/src/main/java/org/example/gainzone/mapper/TrainingProgramMapper.java:[20,10] Unmapped target properties: "id, createdAt, updatedAt, coach, member".
+[WARNING] /C:/Users/BeeClick/Desktop/YouCode/GainZone-/src/main/java/org/example/gainzone/mapper/ActivityMapper.java:[14,14] Unmapped target properties: "id, createdAt, updatedAt, coach".
+[WARNING] /C:/Users/BeeClick/Desktop/YouCode/GainZone-/src/main/java/org/example/gainzone/mapper/ActivityMapper.java:[16,22] Unmapped target properties: "coachId, coachName".
+[WARNING] /C:/Users/BeeClick/Desktop/YouCode/GainZone-/src/main/java/org/example/gainzone/mapper/ActivityMapper.java:[20,10] Unmapped target properties: "id, createdAt, updatedAt, coach".
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  5.798 s
+[INFO] Finished at: 2026-03-18T14:17:52Z
+[INFO] ------------------------------------------------------------------------
