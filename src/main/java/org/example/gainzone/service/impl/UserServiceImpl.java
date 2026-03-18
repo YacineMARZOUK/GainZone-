@@ -22,7 +22,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public UserResponse createUser(RegisterRequest registerRequest) {
-        if (userRepository.findByEmail(registerRequest.email()).isPresent()) {
+        if (userRepository.findByEmail(registerRequest.getEmail()).isPresent()) {
             throw new RuntimeException("Email already in use");
         }
         User user = userMapper.toEntity(registerRequest);

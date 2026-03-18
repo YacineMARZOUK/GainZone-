@@ -15,6 +15,7 @@ import org.springframework.util.MimeTypeUtils;
 
 import java.util.Base64;
 import java.util.List;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Slf4j
 @Service
@@ -22,10 +23,12 @@ public class MorphologyAnalysisServiceImpl implements MorphologyAnalysisService 
 
     private final ChatClient chatClient;
     private final UserRepository userRepository;
+    private final ObjectMapper objectMapper;
 
-    public MorphologyAnalysisServiceImpl(ChatClient.Builder chatClientBuilder, UserRepository userRepository) {
+    public MorphologyAnalysisServiceImpl(ChatClient.Builder chatClientBuilder, UserRepository userRepository, ObjectMapper objectMapper) {
         this.chatClient = chatClientBuilder.build();
         this.userRepository = userRepository;
+        this.objectMapper = objectMapper;
     }
 
     @Override
@@ -48,22 +51,22 @@ public class MorphologyAnalysisServiceImpl implements MorphologyAnalysisService 
 
     private AITrainingPlanResponse generatePlanFromAI(MemberProfile profile) {
         String promptString = """
-                Tu es un coach sportif professionnel de très haut niveau, expert en biomécanique, nutrition et physiologie de l'exercice pour le 'GainZone Manager'.
-                Ton objectif est d'analyser les données morphologiques d'un individu et de lui concevoir le programme d'entraînement parfait, 100% sur-mesure.
-
-                Voici les données biométriques de l'athlète :
-                - Âge : {age} ans
-                - Genre : {gender}
-                - Poids : {weight} kg
-                - Taille : {height} cm
-                - Niveau fitness : {fitnessLevel}
-                - Objectif principal : {goal}
-
-                Veuillez observer la photo fournie pour affiner votre analyse morphologique (répartition masse grasse/musculaire, posture, etc.).
+                Tu es un coach sportif. Analyse brièvement la morphologie de la personne basée sur ces données et fournis un plan.
                 
-                Règle absolue : Génère un plan clair, motivant, et surtout réaliste en respectant strictement le format JSON du schéma fourni.
+                Âge: {age}, Genre: {gender}, Poids: {weight}kg, Taille: {height}cm, Niveau: {fitnessLevel}, Objectif: {goal}.
+                
+                Réponds EXCLUSIVEMENT en respectant strictement le format JSON.
+                Le JSON doit contenir les clés exactes suivantes :
+                - "name": Nom du programme
+                - "description": Courte analyse et description
+                - "frequency": ex "3 fois par semaine"
+                - "durationWeeks": chiffre (ex 4)
+                - "exercises": tableau d'objets avec "name", "sets", "reps"
+                
+                Aucun texte avant ou après le JSON.
                 """;
 
+        String rawResponse;
         if (profile.getProfileImageUrl() != null && !profile.getProfileImageUrl().isBlank()) {
            try {
                String base64Image = profile.getProfileImageUrl();
@@ -72,7 +75,7 @@ public class MorphologyAnalysisServiceImpl implements MorphologyAnalysisService 
                }
                byte[] decodedBytes = Base64.getDecoder().decode(base64Image);
                
-               return chatClient.prompt()
+               rawResponse = chatClient.prompt()
                        .user(u -> u.text(promptString)
                                .param("age", profile.getAge())
                                .param("gender", profile.getGender())
@@ -83,24 +86,53 @@ public class MorphologyAnalysisServiceImpl implements MorphologyAnalysisService 
                                .media(MimeTypeUtils.IMAGE_JPEG, new ByteArrayResource(decodedBytes))
                        )
                        .call()
-                       .entity(AITrainingPlanResponse.class);
-                       
-           } catch(IllegalArgumentException e) {
+                       .content();
+           } catch(Exception e) {
                log.warn("Impossible de décoder l'image Base64 de l'utilisateur {}", profile.getId());
+               rawResponse = chatClient.prompt()
+                       .user(u -> u.text(promptString)
+                               .param("age", profile.getAge())
+                               .param("gender", profile.getGender())
+                               .param("weight", profile.getWeight())
+                               .param("height", profile.getHeight())
+                               .param("goal", profile.getGoal())
+                               .param("fitnessLevel", profile.getFitnessLevel())
+                       )
+                       .call()
+                       .content();
            }
+        } else {
+            rawResponse = chatClient.prompt()
+                    .user(u -> u.text(promptString)
+                            .param("age", profile.getAge())
+                            .param("gender", profile.getGender())
+                            .param("weight", profile.getWeight())
+                            .param("height", profile.getHeight())
+                            .param("goal", profile.getGoal())
+                            .param("fitnessLevel", profile.getFitnessLevel())
+                    )
+                    .call()
+                    .content();
         }
 
-        return chatClient.prompt()
-                .user(u -> u.text(promptString)
-                        .param("age", profile.getAge())
-                        .param("gender", profile.getGender())
-                        .param("weight", profile.getWeight())
-                        .param("height", profile.getHeight())
-                        .param("goal", profile.getGoal())
-                        .param("fitnessLevel", profile.getFitnessLevel())
-                )
-                .call()
-                .entity(AITrainingPlanResponse.class);
+        return parseJsonToResponse(rawResponse, profile);
+    }
+
+    private AITrainingPlanResponse parseJsonToResponse(String rawContent, MemberProfile profile) {
+        try {
+            if (rawContent == null) return generateFallbackResponse(profile);
+            int start = rawContent.indexOf("{");
+            int end = rawContent.lastIndexOf("}");
+            if (start != -1 && end != -1 && end >= start) {
+                String cleanJson = rawContent.substring(start, end + 1);
+                return objectMapper.readValue(cleanJson, AITrainingPlanResponse.class);
+            }
+            log.warn("Aucun JSON valide trouvé dans la réponse : {}", rawContent);
+            return generateFallbackResponse(profile);
+        } catch (Exception e) {
+            log.error("Erreur de parsing JSON depuis Ollama : {}", e.getMessage());
+            return generateFallbackResponse(profile);
+        }
     }
 
     private AITrainingPlanResponse generateFallbackResponse(MemberProfile profile) {
@@ -111,9 +143,9 @@ public class MorphologyAnalysisServiceImpl implements MorphologyAnalysisService 
                 "3 fois par semaine",
                 4,
                 List.of(
-                        new ExerciseDto("Pompes", 3, 15),
-                        new ExerciseDto("Squats", 4, 12),
-                        new ExerciseDto("Gainage", 3, 60)
+                        new ExerciseDto("Pompes", "3", "15"),
+                        new ExerciseDto("Squats", "4", "12"),
+                        new ExerciseDto("Gainage", "3", "60")
                 )
         );
     }
