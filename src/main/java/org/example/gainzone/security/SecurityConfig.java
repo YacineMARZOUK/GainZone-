@@ -33,7 +33,7 @@ public class SecurityConfig {
                 .requestMatchers("/api/admin/**").hasRole("ADMIN")
                 
                 // COACH : Activités, Cours, Événements
-                .requestMatchers("/api/activities/**").hasRole("COACH")
+                .requestMatchers("/api/activities/**").hasAnyRole("COACH", "ADMIN")
                 
                 // MEMBER : Analyse IA, Upload et Biométrie
                 .requestMatchers("/api/analysis/**").hasRole("MEMBER")

@@ -23,4 +23,5 @@ public class RegisterRequest {
     private String name;
     private String lastName;
     private String phone;
+    private String role; // "COACH" ou "MEMBER" (ADMIN interdit)
 }

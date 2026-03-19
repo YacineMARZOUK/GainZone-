@@ -91,3 +91,9 @@ Hibernate:
 AITrainingPlanResponse[name=Fight Weight Fatigue, description=Tailored program to help you kick start your weight loss journey and boost your energy levels., frequency=3 times per week, durationWeeks=4, exercises=[ExerciseDto[name=Running, sets=3, reps=10], ExerciseDto[name=Strength Training, sets=3, reps=8], ExerciseDto[name=Yoga, sets=2, reps=15]]]
 2026-03-18T15:00:03.596Z  INFO 132760 --- [           main] o.e.gainzone.runner.TestOllamaRunner     : =========================================
 2026-03-18T15:29:48.193Z  WARN 132760 --- [l-1 housekeeper] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=4m55s783ms746Ás100ns).
+2026-03-18T15:50:04.737Z  INFO 132760 --- [nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-03-18T15:50:04.743Z  INFO 132760 --- [nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-03-18T15:50:04.831Z  INFO 132760 --- [nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 87 ms
+2026-03-19T09:00:33.850Z  WARN 132760 --- [l-1 housekeeper] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=16h56m15s19ms160Ás100ns).
+2026-03-19T11:26:21.146Z  WARN 132760 --- [l-1 housekeeper] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=1h18m44s816ms954Ás300ns).
+2026-03-19T13:48:49.798Z  WARN 132760 --- [l-1 housekeeper] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=2h14m58s526ms625Ás300ns).

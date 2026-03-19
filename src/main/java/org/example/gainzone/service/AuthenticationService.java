@@ -23,6 +23,18 @@ public class AuthenticationService {
     private final AuthenticationManager authenticationManager;
 
     public AuthResponse register(RegisterRequest request) {
+        Role targetRole = Role.MEMBER; // Par défaut
+        
+        if (request.getRole() != null) {
+            String roleStr = request.getRole().trim().toUpperCase();
+            if ("COACH".equals(roleStr)) {
+                targetRole = Role.COACH;
+            } else if ("MEMBER".equals(roleStr)) {
+                targetRole = Role.MEMBER;
+            }
+            // ADMIN reste à MEMBER par sécurité pour empêcher l'escalade de privilèges
+        }
+
         var user = User.builder()
                 .username(request.getUsername())
                 .email(request.getEmail())
@@ -30,7 +42,7 @@ public class AuthenticationService {
                 .name(request.getName())
                 .lastName(request.getLastName())
                 .phone(request.getPhone())
-                .role(Role.MEMBER) // Rôle par défaut
+                .role(targetRole)
                 .build();
         
         userRepository.save(user);
