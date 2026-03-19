@@ -17,7 +17,7 @@ public class AnalysisController {
     private final MorphologyAnalysisService morphologyAnalysisService;
 
     @PostMapping("/generate/{userId}")
-    public ResponseEntity<AITrainingPlanResponse> generateTrainingPlan(@PathVariable Long userId) {
+    public ResponseEntity<AITrainingPlanResponse> generateTrainingPlan(@PathVariable("userId") Long userId) {
         AITrainingPlanResponse plan = morphologyAnalysisService.analyzeMorphology(userId);
         return ResponseEntity.ok(plan);
     }

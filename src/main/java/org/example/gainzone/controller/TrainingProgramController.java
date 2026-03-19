@@ -25,13 +25,13 @@ public class TrainingProgramController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<TrainingProgramResponse> updateTrainingProgram(@PathVariable Long id,
+    public ResponseEntity<TrainingProgramResponse> updateTrainingProgram(@PathVariable("id") Long id,
             @RequestBody TrainingProgramRequest trainingProgramRequest) {
         return ResponseEntity.ok(trainingProgramService.updateTrainingProgram(id, trainingProgramRequest));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteTrainingProgram(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteTrainingProgram(@PathVariable("id") Long id) {
         trainingProgramService.deleteTrainingProgram(id);
         return ResponseEntity.noContent().build();
     }
@@ -42,7 +42,8 @@ public class TrainingProgramController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<TrainingProgramResponse> getTrainingProgramById(@PathVariable Long id) {
+    public ResponseEntity<TrainingProgramResponse> getTrainingProgramById(@PathVariable("id") Long id) {
         return ResponseEntity.ok(trainingProgramService.getTrainingProgramById(id));
     }
 }
+

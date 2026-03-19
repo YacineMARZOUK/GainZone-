@@ -23,13 +23,13 @@ public class ActivityController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ActivityResponse> updateActivity(@PathVariable Long id,
+    public ResponseEntity<ActivityResponse> updateActivity(@PathVariable("id") Long id,
             @RequestBody ActivityRequest activityRequest) {
         return ResponseEntity.ok(activityService.updateActivity(id, activityRequest));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteActivity(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteActivity(@PathVariable("id") Long id) {
         activityService.deleteActivity(id);
         return ResponseEntity.noContent().build();
     }
@@ -40,7 +40,8 @@ public class ActivityController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ActivityResponse> getActivityById(@PathVariable Long id) {
+    public ResponseEntity<ActivityResponse> getActivityById(@PathVariable("id") Long id) {
         return ResponseEntity.ok(activityService.getActivityById(id));
     }
 }
+
