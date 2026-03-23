@@ -33,10 +33,23 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public UserResponse updateUser(Long id, RegisterRequest registerRequest) {
+    public UserResponse updateUser(Long id, org.example.gainzone.dto.request.UserUpdateRequest request) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
-        userMapper.updateEntityFromRequest(registerRequest, user);
+        
+        if (request.getUsername() != null) user.setUsername(request.getUsername());
+        if (request.getEmail() != null) user.setEmail(request.getEmail());
+        if (request.getName() != null) user.setName(request.getName());
+        if (request.getLastName() != null) user.setLastName(request.getLastName());
+        if (request.getPhone() != null) user.setPhone(request.getPhone());
+        if (request.getRole() != null) {
+            try {
+                user.setRole(org.example.gainzone.enums.Role.valueOf(request.getRole().toUpperCase()));
+            } catch (IllegalArgumentException e) {
+                // Rôle invalide ignoré
+            }
+        }
+
         User updatedUser = userRepository.save(user);
         return userMapper.toResponse(updatedUser);
     }

@@ -24,7 +24,7 @@ public class UserController {
 
     @PutMapping("/{id}")
     public ResponseEntity<UserResponse> updateUser(@PathVariable("id") Long id,
-            @RequestBody RegisterRequest registerRequest) {
+            @RequestBody org.example.gainzone.dto.request.UserUpdateRequest registerRequest) {
         return ResponseEntity.ok(userService.updateUser(id, registerRequest));
     }
 

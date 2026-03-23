@@ -28,4 +28,10 @@ public class AdminController {
         userService.deleteUser(id);
         return ResponseEntity.ok(response);
     }
+
+    @PutMapping("/users/{id}")
+    public ResponseEntity<UserResponse> updateUser(@PathVariable("id") Long id, 
+            @RequestBody org.example.gainzone.dto.request.UserUpdateRequest request) {
+        return ResponseEntity.ok(userService.updateUser(id, request));
+    }
 }
