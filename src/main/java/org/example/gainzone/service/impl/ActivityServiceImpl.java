@@ -18,13 +18,24 @@ public class ActivityServiceImpl implements ActivityService {
 
     private final ActivityRepository activityRepository;
     private final ActivityMapper activityMapper;
+    private final org.example.gainzone.repository.UserRepository userRepository;
 
     @Override
     @Transactional
     public ActivityResponse createActivity(ActivityRequest activityRequest) {
+        String email = org.springframework.security.core.context.SecurityContextHolder.getContext().getAuthentication().getName();
+        org.example.gainzone.entity.User coach = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Coach non trouvé : " + email));
+        
         Activity activity = activityMapper.toEntity(activityRequest);
-        Activity savedActivity = activityRepository.save(activity);
-        return activityMapper.toResponse(savedActivity);
+        activity.setCoach(coach);
+
+        Activity savedActivity = activityRepository.saveAndFlush(activity);
+        
+        Activity reloadedActivity = activityRepository.findById(savedActivity.getId())
+                .orElseThrow(() -> new RuntimeException("Erreur de rechargement de l'activité"));
+
+        return activityMapper.toResponse(reloadedActivity);
     }
 
     @Override

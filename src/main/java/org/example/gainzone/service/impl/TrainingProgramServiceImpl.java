@@ -9,6 +9,9 @@ import org.example.gainzone.repository.TrainingProgramRepository;
 import org.example.gainzone.service.TrainingProgramService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.example.gainzone.repository.UserRepository;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.example.gainzone.entity.User;
 
 import java.util.List;
 
@@ -18,13 +21,29 @@ public class TrainingProgramServiceImpl implements TrainingProgramService {
 
     private final TrainingProgramRepository trainingProgramRepository;
     private final TrainingProgramMapper trainingProgramMapper;
+    private final UserRepository userRepository;
 
     @Override
     @Transactional
     public TrainingProgramResponse createTrainingProgram(TrainingProgramRequest trainingProgramRequest) {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        User coach = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Coach non trouvé : " + email));
+
+        User member = userRepository.findById(trainingProgramRequest.memberId())
+                .orElseThrow(() -> new RuntimeException(
+                        "Membre non trouvé avec l'id : " + trainingProgramRequest.memberId()));
+
         TrainingProgram trainingProgram = trainingProgramMapper.toEntity(trainingProgramRequest);
-        TrainingProgram savedTrainingProgram = trainingProgramRepository.save(trainingProgram);
-        return trainingProgramMapper.toResponse(savedTrainingProgram);
+        trainingProgram.setCoach(coach);
+        trainingProgram.setMember(member);
+
+        TrainingProgram savedTrainingProgram = trainingProgramRepository.saveAndFlush(trainingProgram);
+
+        TrainingProgram reloaded = trainingProgramRepository.findById(savedTrainingProgram.getId())
+                .orElseThrow(() -> new RuntimeException("Erreur de rechargement du programme"));
+
+        return trainingProgramMapper.toResponse(reloaded);
     }
 
     @Override

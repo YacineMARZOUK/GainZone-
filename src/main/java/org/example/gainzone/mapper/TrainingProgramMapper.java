@@ -13,6 +13,9 @@ public interface TrainingProgramMapper {
 
     TrainingProgram toEntity(TrainingProgramRequest request);
 
+    @org.mapstruct.Mapping(source = "coach.id", target = "coachId")
+    @org.mapstruct.Mapping(source = "coach.name", target = "coachName")
+    @org.mapstruct.Mapping(source = "member.id", target = "memberId")
     TrainingProgramResponse toResponse(TrainingProgram trainingProgram);
 
     List<TrainingProgramResponse> toResponseList(List<TrainingProgram> trainingPrograms);

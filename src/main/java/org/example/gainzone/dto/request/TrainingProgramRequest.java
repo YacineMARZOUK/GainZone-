@@ -5,8 +5,6 @@ public record TrainingProgramRequest(
         String description,
         String frequency,
         Integer durationWeeks,
-        Long coachId,
-        String coachName,
         Long memberId,
         String exercisesJson) {
 }

@@ -21,8 +21,5 @@ public record ActivityRequest(
         Integer durationMinutes,
         @NotNull(message = "Le nombre maximum de participants ne peut pas être nul")
         @Positive(message = "Le nombre maximum de participants doit être positif")
-        Integer maxParticipants,
-        @NotNull(message = "L'ID du coach ne peut pas être nul")
-        Long coachId,
-        String coachName) {
+        Integer maxParticipants) {
 }

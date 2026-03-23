@@ -13,6 +13,8 @@ public interface ActivityMapper {
 
     Activity toEntity(ActivityRequest request);
 
+    @org.mapstruct.Mapping(source = "coach.id", target = "coachId")
+    @org.mapstruct.Mapping(source = "coach.name", target = "coachName")
     ActivityResponse toResponse(Activity activity);
 
     List<ActivityResponse> toResponseList(List<Activity> activities);
