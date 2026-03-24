@@ -10,6 +10,7 @@ public record ActivityResponse(
         LocalDateTime dateTime,
         Integer durationMinutes,
         Integer maxParticipants,
+        Integer currentParticipantsCount,
         Long coachId,
         String coachName) {
 }

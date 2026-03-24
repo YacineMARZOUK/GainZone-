@@ -43,5 +43,10 @@ public class ActivityController {
     public ResponseEntity<ActivityResponse> getActivityById(@PathVariable("id") Long id) {
         return ResponseEntity.ok(activityService.getActivityById(id));
     }
+
+    @PostMapping("/{id}/join")
+    public ResponseEntity<ActivityResponse> joinActivity(@PathVariable("id") Long id) {
+        return ResponseEntity.ok(activityService.joinActivity(id));
+    }
 }
 

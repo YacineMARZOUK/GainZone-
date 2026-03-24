@@ -32,6 +32,9 @@ public class SecurityConfig {
                 // ADMIN : Gestion des utilisateurs
                 .requestMatchers("/api/admin/**").hasRole("ADMIN")
                 
+                // MEMBER : Inscription aux activités
+                .requestMatchers(org.springframework.http.HttpMethod.POST, "/api/activities/*/join").hasRole("MEMBER")
+                
                 // COACH : Activités, Cours, Événements
                 .requestMatchers("/api/activities/**").hasAnyRole("COACH", "ADMIN")
                 

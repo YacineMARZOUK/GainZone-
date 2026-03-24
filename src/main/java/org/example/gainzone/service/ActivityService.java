@@ -15,4 +15,6 @@ public interface ActivityService {
     List<ActivityResponse> getAllActivities();
 
     ActivityResponse getActivityById(Long id);
+
+    ActivityResponse joinActivity(Long id);
 }

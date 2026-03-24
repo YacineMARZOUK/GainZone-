@@ -71,4 +71,30 @@ public class ActivityServiceImpl implements ActivityService {
                 .orElseThrow(() -> new RuntimeException("Activity not found with id: " + id));
         return activityMapper.toResponse(activity);
     }
+
+    @Override
+    @Transactional
+    public ActivityResponse joinActivity(Long id) {
+        String email = org.springframework.security.core.context.SecurityContextHolder.getContext().getAuthentication().getName();
+        org.example.gainzone.entity.User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Utilisateur non trouvé : " + email));
+
+        Activity activity = activityRepository.findById(id)
+                .orElseThrow(() -> new org.springframework.web.server.ResponseStatusException(org.springframework.http.HttpStatus.NOT_FOUND, "Activité non trouvée"));
+
+        if (activity.getParticipants().size() >= activity.getMaxParticipants()) {
+             throw new org.springframework.web.server.ResponseStatusException(org.springframework.http.HttpStatus.BAD_REQUEST, "Activité complète");
+        }
+
+        boolean alreadyJoined = activity.getParticipants().stream()
+                .anyMatch(p -> p.getId().equals(user.getId()));
+        if (alreadyJoined) {
+             throw new org.springframework.web.server.ResponseStatusException(org.springframework.http.HttpStatus.BAD_REQUEST, "Déjà inscrit");
+        }
+
+        activity.getParticipants().add(user);
+        Activity savedActivity = activityRepository.saveAndFlush(activity);
+
+        return activityMapper.toResponse(savedActivity);
+    }
 }

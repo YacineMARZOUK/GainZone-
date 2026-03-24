@@ -1,8 +1,6 @@
 package org.example.gainzone.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,6 +8,8 @@ import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "activity")
@@ -29,4 +29,13 @@ public class Activity extends BaseEntity {
 
     @ManyToOne
     private User coach;
+
+    @ManyToMany
+    @JoinTable(
+        name = "activity_participants",
+        joinColumns = @JoinColumn(name = "activity_id"),
+        inverseJoinColumns = @JoinColumn(name = "user_id")
+    )
+    @lombok.Builder.Default
+    private Set<User> participants = new HashSet<>();
 }

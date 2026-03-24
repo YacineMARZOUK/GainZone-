@@ -15,6 +15,7 @@ public interface ActivityMapper {
 
     @org.mapstruct.Mapping(source = "coach.id", target = "coachId")
     @org.mapstruct.Mapping(source = "coach.name", target = "coachName")
+    @org.mapstruct.Mapping(target = "currentParticipantsCount", expression = "java(activity.getParticipants() != null ? activity.getParticipants().size() : 0)")
     ActivityResponse toResponse(Activity activity);
 
     List<ActivityResponse> toResponseList(List<Activity> activities);
