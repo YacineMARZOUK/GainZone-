@@ -2,6 +2,7 @@ package org.example.gainzone.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -36,6 +37,6 @@ public class Activity extends BaseEntity {
         joinColumns = @JoinColumn(name = "activity_id"),
         inverseJoinColumns = @JoinColumn(name = "user_id")
     )
-    @lombok.Builder.Default
+    @Builder.Default
     private Set<User> participants = new HashSet<>();
 }

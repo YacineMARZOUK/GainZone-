@@ -7,8 +7,10 @@ import org.example.gainzone.entity.Product;
 import org.example.gainzone.mapper.ProductMapper;
 import org.example.gainzone.repository.ProductRepository;
 import org.example.gainzone.service.ProductService;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -31,7 +33,7 @@ public class ProductServiceImpl implements ProductService {
     @Transactional
     public ProductResponse updateProduct(Long id, ProductRequest productRequest) {
         Product product = productRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Product not found with id: " + id));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Product not found with id: " + id));
         productMapper.updateEntityFromRequest(productRequest, product);
         Product updatedProduct = productRepository.save(product);
         return productMapper.toResponse(updatedProduct);
@@ -39,11 +41,12 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @Transactional
-    public void deleteProduct(Long id) {
-        if (!productRepository.existsById(id)) {
-            throw new RuntimeException("Product not found with id: " + id);
-        }
-        productRepository.deleteById(id);
+    public ProductResponse deleteProduct(Long id) {
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Product not found with id: " + id));
+        ProductResponse response = productMapper.toResponse(product);
+        productRepository.delete(product);
+        return response;
     }
 
     @Override
@@ -57,7 +60,7 @@ public class ProductServiceImpl implements ProductService {
     @Transactional(readOnly = true)
     public ProductResponse getProductById(Long id) {
         Product product = productRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Product not found with id: " + id));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Product not found with id: " + id));
         return productMapper.toResponse(product);
     }
 }

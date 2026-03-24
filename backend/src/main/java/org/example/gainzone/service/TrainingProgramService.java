@@ -10,7 +10,7 @@ public interface TrainingProgramService {
 
     TrainingProgramResponse updateTrainingProgram(Long id, TrainingProgramRequest trainingProgramRequest);
 
-    void deleteTrainingProgram(Long id);
+    TrainingProgramResponse deleteTrainingProgram(Long id);
 
     List<TrainingProgramResponse> getAllTrainingPrograms();
 

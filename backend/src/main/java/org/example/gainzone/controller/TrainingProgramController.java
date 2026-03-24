@@ -6,6 +6,8 @@ import org.example.gainzone.dto.response.TrainingProgramResponse;
 import org.example.gainzone.service.TrainingProgramService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -31,21 +33,20 @@ public class TrainingProgramController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteTrainingProgram(@PathVariable("id") Long id) {
-        trainingProgramService.deleteTrainingProgram(id);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<TrainingProgramResponse> deleteTrainingProgram(@PathVariable("id") Long id) {
+        return ResponseEntity.ok(trainingProgramService.deleteTrainingProgram(id));
     }
 
     @GetMapping("/my-programs")
-    @org.springframework.security.access.prepost.PreAuthorize("hasRole('MEMBER')")
-    public ResponseEntity<java.util.List<TrainingProgramResponse>> getMyTrainingPrograms() {
-        String email = org.springframework.security.core.context.SecurityContextHolder.getContext().getAuthentication().getName();
+    @PreAuthorize("hasRole('MEMBER')")
+    public ResponseEntity<List<TrainingProgramResponse>> getMyTrainingPrograms() {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
         return ResponseEntity.ok(trainingProgramService.getTrainingProgramsByEmail(email));
     }
 
     @GetMapping
-    @org.springframework.security.access.prepost.PreAuthorize("hasAnyRole('COACH', 'ADMIN')")
-    public ResponseEntity<java.util.List<TrainingProgramResponse>> getAllTrainingPrograms() {
+    @PreAuthorize("hasAnyRole('COACH', 'ADMIN')")
+    public ResponseEntity<List<TrainingProgramResponse>> getAllTrainingPrograms() {
         return ResponseEntity.ok(trainingProgramService.getAllTrainingPrograms());
     }
 

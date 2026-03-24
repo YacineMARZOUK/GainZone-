@@ -29,9 +29,8 @@ public class ActivityController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteActivity(@PathVariable("id") Long id) {
-        activityService.deleteActivity(id);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<ActivityResponse> deleteActivity(@PathVariable("id") Long id) {
+        return ResponseEntity.ok(activityService.deleteActivity(id));
     }
 
     @GetMapping

@@ -10,7 +10,7 @@ public interface ActivityService {
 
     ActivityResponse updateActivity(Long id, ActivityRequest categoryRequest);
 
-    void deleteActivity(Long id);
+    ActivityResponse deleteActivity(Long id);
 
     List<ActivityResponse> getAllActivities();
 
