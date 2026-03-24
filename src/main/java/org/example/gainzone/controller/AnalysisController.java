@@ -14,7 +14,17 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class AnalysisController {
 
-    private final MorphologyAnalysisService morphologyAnalysisService;
+    private final org.example.gainzone.service.MorphologyAnalysisService morphologyAnalysisService;
+    private final org.example.gainzone.repository.UserRepository userRepository;
+
+    @PostMapping("/generate")
+    public ResponseEntity<AITrainingPlanResponse> generateMyTrainingPlan() {
+        String email = org.springframework.security.core.context.SecurityContextHolder.getContext().getAuthentication().getName();
+        org.example.gainzone.entity.User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Utilisateur non trouvé : " + email));
+        AITrainingPlanResponse plan = morphologyAnalysisService.analyzeMorphology(user.getId());
+        return ResponseEntity.ok(plan);
+    }
 
     @PostMapping("/generate/{userId}")
     public ResponseEntity<AITrainingPlanResponse> generateTrainingPlan(@PathVariable("userId") Long userId) {

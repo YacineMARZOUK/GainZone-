@@ -79,4 +79,19 @@ public class TrainingProgramServiceImpl implements TrainingProgramService {
                 .orElseThrow(() -> new RuntimeException("TrainingProgram not found with id: " + id));
         return trainingProgramMapper.toResponse(trainingProgram);
     }
+
+    @Override
+    @org.springframework.transaction.annotation.Transactional(readOnly = true)
+    public java.util.List<TrainingProgramResponse> getTrainingProgramsByMemberId(Long memberId) {
+        java.util.List<org.example.gainzone.entity.TrainingProgram> trainingPrograms = trainingProgramRepository.findByMemberId(memberId);
+        return trainingProgramMapper.toResponseList(trainingPrograms);
+    }
+
+    @Override
+    @org.springframework.transaction.annotation.Transactional(readOnly = true)
+    public java.util.List<TrainingProgramResponse> getTrainingProgramsByEmail(String email) {
+        org.example.gainzone.entity.User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Utilisateur non trouvé : " + email));
+        return getTrainingProgramsByMemberId(user.getId());
+    }
 }

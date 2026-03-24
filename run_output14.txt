@@ -104,3 +104,4 @@ AITrainingPlanResponse[name=Fight Weight Fatigue, description=Tailored program t
 2026-03-23T10:59:54.393+01:00  WARN 132760 --- [l-1 housekeeper] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=33m49s762ms285Ás500ns).
 2026-03-23T12:09:21.438+01:00  WARN 132760 --- [l-1 housekeeper] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=9m26s42ms301Ás300ns).
 2026-03-23T14:34:05.675+01:00  WARN 132760 --- [l-1 housekeeper] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=2h13s874ms557Ás300ns).
+2026-03-23T15:28:58.181+01:00  WARN 132760 --- [l-1 housekeeper] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=1m21s526ms729Ás).

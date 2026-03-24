@@ -15,4 +15,8 @@ public interface TrainingProgramService {
     List<TrainingProgramResponse> getAllTrainingPrograms();
 
     TrainingProgramResponse getTrainingProgramById(Long id);
+
+    List<TrainingProgramResponse> getTrainingProgramsByMemberId(Long memberId);
+
+    List<TrainingProgramResponse> getTrainingProgramsByEmail(String email);
 }

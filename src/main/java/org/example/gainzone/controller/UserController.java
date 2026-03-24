@@ -35,7 +35,8 @@ public class UserController {
     }
 
     @GetMapping
-    public ResponseEntity<List<UserResponse>> getAllUsers() {
+    @org.springframework.security.access.prepost.PreAuthorize("hasAnyRole('COACH', 'ADMIN')")
+    public ResponseEntity<java.util.List<UserResponse>> getAllUsers() {
         return ResponseEntity.ok(userService.getAllUsers());
     }
 

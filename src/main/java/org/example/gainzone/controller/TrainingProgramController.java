@@ -36,8 +36,16 @@ public class TrainingProgramController {
         return ResponseEntity.noContent().build();
     }
 
+    @GetMapping("/my-programs")
+    @org.springframework.security.access.prepost.PreAuthorize("hasRole('MEMBER')")
+    public ResponseEntity<java.util.List<TrainingProgramResponse>> getMyTrainingPrograms() {
+        String email = org.springframework.security.core.context.SecurityContextHolder.getContext().getAuthentication().getName();
+        return ResponseEntity.ok(trainingProgramService.getTrainingProgramsByEmail(email));
+    }
+
     @GetMapping
-    public ResponseEntity<List<TrainingProgramResponse>> getAllTrainingPrograms() {
+    @org.springframework.security.access.prepost.PreAuthorize("hasAnyRole('COACH', 'ADMIN')")
+    public ResponseEntity<java.util.List<TrainingProgramResponse>> getAllTrainingPrograms() {
         return ResponseEntity.ok(trainingProgramService.getAllTrainingPrograms());
     }
 
