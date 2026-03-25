@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
 import { ActivityService } from '../../services/activity.service';
 import { Activity } from '../../models/activity.model';
@@ -23,7 +23,7 @@ export class ActivityComponent implements OnInit {
     Users
   };
 
-  constructor(private activityService: ActivityService) { }
+  constructor(private activityService: ActivityService, private cdr: ChangeDetectorRef) { }
 
   ngOnInit(): void {
     this.loadActivities();
@@ -34,6 +34,7 @@ export class ActivityComponent implements OnInit {
       next: (data) => {
         console.log('Activités reçues :', data);
         this.activities = data;
+        this.cdr.detectChanges(); // Force le rafraîchissement de la vue
       },
       error: (err) => {
         console.error('Erreur de chargement des activités', err);
@@ -55,8 +56,7 @@ export class ActivityComponent implements OnInit {
         this.joinedActivities.add(activityId);
       },
       error: (err) => {
-        console.error('Erreur lors de la réservation', err);
-        this.errorMessage = 'Erreur lors de la réservation. La séance est peut-être complète.';
+        this.errorMessage = 'Erreur lors de la réservation.vous etes deja inscrit';
       }
     });
   }
