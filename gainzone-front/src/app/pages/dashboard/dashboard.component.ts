@@ -1,10 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
 import { MemberService } from '../../services/member.service';
 import { MemberProfileResponse } from '../../models/member.model';
 import { LucideAngularModule, Weight, Target, Activity } from 'lucide-angular';
+import { finalize } from 'rxjs/operators';
 
 @Component({
   selector: 'app-dashboard',
@@ -15,7 +16,7 @@ import { LucideAngularModule, Weight, Target, Activity } from 'lucide-angular';
 export class DashboardComponent implements OnInit {
   username: string | null = '';
   role: string | null = '';
-  
+
   profileForm!: FormGroup;
   profileData: MemberProfileResponse | null = null;
   isLoading = false;
@@ -32,7 +33,8 @@ export class DashboardComponent implements OnInit {
   constructor(
     private authService: AuthService,
     private memberService: MemberService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private cdr: ChangeDetectorRef
   ) { }
 
   ngOnInit(): void {
@@ -52,7 +54,7 @@ export class DashboardComponent implements OnInit {
       gender: [''], // M ou F
       weight: [null, [Validators.min(0)]],
       height: [null, [Validators.min(0)]],
-      goal: [''], // WEIGHT_LOSS, MUSCLE_GAIN, ENDURANCE, MAINTENANCE
+      goal: [''], // WEIGHT_LOSS, WEIGHT_GAIN, PERFORMANCE
       fitnessLevel: [''], // BEGINNER, INTERMEDIATE, ADVANCED
     });
   }
@@ -80,19 +82,30 @@ export class DashboardComponent implements OnInit {
       this.successMessage = '';
       this.errorMessage = '';
 
-      this.memberService.updateProfile(this.profileForm.value).subscribe({
-        next: (data) => {
-          this.isLoading = false;
-          this.profileData = data;
-          this.successMessage = 'Profil mis à jour avec succès !';
-          setTimeout(() => this.successMessage = '', 3000);
-        },
-        error: (err) => {
-          this.isLoading = false;
-          this.errorMessage = 'Erreur lors de la mise à jour.';
-          console.error(err);
-        }
-      });
+      console.log('Envoi des données :', this.profileForm.value);
+
+      this.memberService.updateProfile(this.profileForm.value)
+        .pipe(
+          finalize(() => {
+            this.isLoading = false;
+            this.cdr.detectChanges(); // Force Angular à mettre à jour la vue HTML
+          })
+        )
+        .subscribe({
+          next: (data) => {
+            console.log('Réponse reçue :', data);
+            this.profileData = data;
+            this.successMessage = 'Profil mis à jour avec succès !';
+            setTimeout(() => {
+              this.successMessage = '';
+              this.cdr.detectChanges();
+            }, 3000);
+          },
+          error: (err) => {
+            console.error('Erreur API :', err);
+            this.errorMessage = 'Erreur lors de la mise à jour.';
+          }
+        });
     }
   }
 
@@ -100,9 +113,8 @@ export class DashboardComponent implements OnInit {
     if (!goal) return 'Non défini';
     const goals: { [key: string]: string } = {
       'WEIGHT_LOSS': 'Perte de poids',
-      'MUSCLE_GAIN': 'Prise de masse',
-      'ENDURANCE': 'Endurance',
-      'MAINTENANCE': 'Maintien'
+      'WEIGHT_GAIN': 'Prise de masse',
+      'PERFORMANCE': 'Performance'
     };
     return goals[goal] || goal;
   }

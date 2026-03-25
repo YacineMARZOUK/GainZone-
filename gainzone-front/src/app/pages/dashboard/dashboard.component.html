@@ -2,19 +2,22 @@
   <div class="max-w-7xl mx-auto">
     <header class="mb-10">
       <h1 class="text-4xl font-black tracking-wide">Tableau de bord</h1>
-      <p class="text-dim-gray mt-2 text-lg">Bienvenue, <span class="text-volt font-bold">{{ username || 'Utilisateur' }}</span> ! Prêt à atteindre vos objectifs ?</p>
+      <p class="text-dim-gray mt-2 text-lg">Bienvenue, <span class="text-volt font-bold">{{ username || 'Utilisateur'
+          }}</span> ! Prêt à atteindre vos objectifs ?</p>
     </header>
 
     <!-- Vue Spécifique MEMBER -->
     <ng-container *ngIf="role === 'MEMBER'">
-      
+
       <!-- Top Cards (Statistiques Rapides) -->
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
         <!-- Poids -->
-        <div class="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 shadow-xl flex items-center justify-between hover:border-volt/50 transition-colors">
+        <div
+          class="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 shadow-xl flex items-center justify-between hover:border-volt/50 transition-colors">
           <div>
             <h3 class="text-dim-gray text-sm font-medium uppercase tracking-wider">Poids Actuel</h3>
-            <p class="text-3xl font-black mt-2 text-white">{{ profileData?.weight || '--' }} <span class="text-lg text-volt">kg</span></p>
+            <p class="text-3xl font-black mt-2 text-white">{{ profileData?.weight || '--' }} <span
+                class="text-lg text-volt">kg</span></p>
           </div>
           <div class="bg-volt/10 p-3 rounded-xl border border-volt/20">
             <lucide-icon [img]="icons.Weight" class="w-8 h-8 text-volt"></lucide-icon>
@@ -22,7 +25,8 @@
         </div>
 
         <!-- Objectif -->
-        <div class="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 shadow-xl flex items-center justify-between hover:border-volt/50 transition-colors">
+        <div
+          class="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 shadow-xl flex items-center justify-between hover:border-volt/50 transition-colors">
           <div>
             <h3 class="text-dim-gray text-sm font-medium uppercase tracking-wider">Objectif</h3>
             <p class="text-2xl font-bold mt-2 text-white">{{ getDisplayGoal(profileData?.goal) }}</p>
@@ -33,7 +37,8 @@
         </div>
 
         <!-- Niveau Fitness -->
-        <div class="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 shadow-xl flex items-center justify-between hover:border-volt/50 transition-colors">
+        <div
+          class="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 shadow-xl flex items-center justify-between hover:border-volt/50 transition-colors">
           <div>
             <h3 class="text-dim-gray text-sm font-medium uppercase tracking-wider">Niveau Fitness</h3>
             <p class="text-2xl font-bold mt-2 text-white">{{ getDisplayLevel(profileData?.fitnessLevel) }}</p>
@@ -52,16 +57,18 @@
         </div>
 
         <!-- Messages Flash -->
-        <div *ngIf="successMessage" class="bg-volt/10 border border-volt text-volt px-4 py-3 rounded-xl mb-6 font-medium">
+        <div *ngIf="successMessage"
+          class="bg-volt/10 border border-volt text-volt px-4 py-3 rounded-xl mb-6 font-medium">
           {{ successMessage }}
         </div>
-        <div *ngIf="errorMessage" class="bg-red-900/30 border border-red-900 text-red-400 px-4 py-3 rounded-xl mb-6 font-medium">
+        <div *ngIf="errorMessage"
+          class="bg-red-900/30 border border-red-900 text-red-400 px-4 py-3 rounded-xl mb-6 font-medium">
           {{ errorMessage }}
         </div>
 
         <form [formGroup]="profileForm" (ngSubmit)="onSubmit()" class="space-y-6">
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            
+
             <!-- Age -->
             <div>
               <label class="block text-sm font-medium text-stone-300 mb-2">Âge</label>
@@ -101,9 +108,8 @@
                 class="w-full px-4 py-3 bg-stone-800 border border-stone-700/50 rounded-xl text-white focus:outline-none focus:border-volt focus:ring-1 focus:ring-volt transition-all appearance-none cursor-pointer">
                 <option value="">Sélectionner un objectif</option>
                 <option value="WEIGHT_LOSS">Perte de poids</option>
-                <option value="MUSCLE_GAIN">Prise de masse</option>
-                <option value="ENDURANCE">Améliorer l'endurance</option>
-                <option value="MAINTENANCE">Maintien de la forme</option>
+                <option value="WEIGHT_GAIN">Prise de masse</option>
+                <option value="PERFORMANCE">Performance</option>
               </select>
             </div>
 
@@ -131,10 +137,11 @@
         </form>
       </div>
     </ng-container>
-    
+
     <!-- Autre vue possible pour COACH / ADMIN selon besoins futurs -->
     <ng-container *ngIf="role !== 'MEMBER'">
-      <div class="bg-zinc-900 border border-zinc-800 rounded-3xl p-8 shadow-2xl flex items-center justify-center min-h-[400px]">
+      <div
+        class="bg-zinc-900 border border-zinc-800 rounded-3xl p-8 shadow-2xl flex items-center justify-center min-h-[400px]">
         <div class="text-center">
           <h2 class="text-2xl font-bold text-white mb-2">Espace {{ role }}</h2>
           <p class="text-dim-gray">Le tableau de bord spécifique sera implémenté prochainement.</p>
