@@ -52,6 +52,12 @@
       <div *ngIf="error" class="bg-red-900/30 border border-red-900 text-red-400 px-4 py-3 rounded-xl text-sm text-center">
         {{ error }}
       </div>
+      
+      <div class="text-center mt-6">
+        <p class="text-sm text-dim-gray">Pas encore de compte ? 
+          <a routerLink="/register" class="text-volt hover:underline transition-colors font-medium">S'inscrire</a>
+        </p>
+      </div>
     </form>
   </div>
 </div>
