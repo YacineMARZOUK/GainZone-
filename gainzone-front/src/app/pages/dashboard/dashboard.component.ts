@@ -3,8 +3,10 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
 import { MemberService } from '../../services/member.service';
+import { AiService } from '../../services/ai.service';
 import { MemberProfileResponse } from '../../models/member.model';
-import { LucideAngularModule, Weight, Target, Activity } from 'lucide-angular';
+import { AITrainingPlanResponse } from '../../models/ai.model';
+import { LucideAngularModule, Weight, Target, Activity, Sparkles } from 'lucide-angular';
 import { finalize } from 'rxjs/operators';
 
 @Component({
@@ -16,23 +18,30 @@ import { finalize } from 'rxjs/operators';
 export class DashboardComponent implements OnInit {
   username: string | null = '';
   role: string | null = '';
-
+  
   profileForm!: FormGroup;
   profileData: MemberProfileResponse | null = null;
   isLoading = false;
   successMessage = '';
   errorMessage = '';
 
+  // AI properties
+  aiPlan: AITrainingPlanResponse | null = null;
+  isAiLoading = false;
+  aiErrorMessage = '';
+
   // Icons used in template
   icons = {
     Weight,
     Target,
-    Activity
+    Activity,
+    Sparkles
   };
 
   constructor(
     private authService: AuthService,
     private memberService: MemberService,
+    private aiService: AiService,
     private fb: FormBuilder,
     private cdr: ChangeDetectorRef
   ) { }
@@ -82,18 +91,15 @@ export class DashboardComponent implements OnInit {
       this.successMessage = '';
       this.errorMessage = '';
 
-      console.log('Envoi des données :', this.profileForm.value);
-
       this.memberService.updateProfile(this.profileForm.value)
         .pipe(
           finalize(() => {
             this.isLoading = false;
-            this.cdr.detectChanges(); // Force Angular à mettre à jour la vue HTML
+            this.cdr.detectChanges();
           })
         )
         .subscribe({
           next: (data) => {
-            console.log('Réponse reçue :', data);
             this.profileData = data;
             this.successMessage = 'Profil mis à jour avec succès !';
             setTimeout(() => {
@@ -102,11 +108,33 @@ export class DashboardComponent implements OnInit {
             }, 3000);
           },
           error: (err) => {
-            console.error('Erreur API :', err);
             this.errorMessage = 'Erreur lors de la mise à jour.';
           }
         });
     }
+  }
+
+  generateAIPlan(): void {
+    this.isAiLoading = true;
+    this.aiErrorMessage = '';
+    this.aiPlan = null;
+    
+    this.aiService.generatePlan()
+      .pipe(
+        finalize(() => {
+          this.isAiLoading = false;
+          this.cdr.detectChanges();
+        })
+      )
+      .subscribe({
+        next: (plan) => {
+          this.aiPlan = plan;
+        },
+        error: (err) => {
+          console.error('Erreur génération plan IA', err);
+          this.aiErrorMessage = "Le GZ-AI Coaching nécessite d'avoir enregistré vos informations de profil (Objectif, Poids, etc.) auparavant, ou le service est temporairement indisponible.";
+        }
+      });
   }
 
   getDisplayGoal(goal: string | undefined): string {
