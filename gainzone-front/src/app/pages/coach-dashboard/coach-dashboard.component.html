@@ -1,0 +1,218 @@
+<div class="min-h-screen bg-dark-bg text-white">
+  <div class="max-w-6xl mx-auto">
+    <!-- Header -->
+    <header class="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-4">
+      <div>
+        <h1 class="text-4xl font-black tracking-wide text-white">
+          Gestion <span class="text-volt">Coach</span>
+        </h1>
+        <p class="text-dim-gray mt-2 text-lg">Gérez vos séances et visualisez les inscriptions de vos membres.</p>
+      </div>
+      
+      <button 
+        (click)="openCreateModal()"
+        class="bg-volt text-black font-black px-6 py-3 rounded-xl hover:bg-[#b8e53c] hover:shadow-[0_0_20px_rgba(205,251,71,0.3)] transition-all flex items-center gap-2 active:scale-95">
+        <lucide-icon [img]="icons.Plus" class="w-5 h-5"></lucide-icon>
+        Ajouter une séance
+      </button>
+    </header>
+
+    <div *ngIf="errorMessage" class="bg-red-900/30 border border-red-900 text-red-400 px-4 py-3 rounded-xl mb-8 font-medium">
+      {{ errorMessage }}
+    </div>
+
+    <!-- Table/Liste des séances -->
+    <div class="bg-zinc-900 border border-zinc-800 rounded-3xl overflow-hidden shadow-2xl">
+      <div class="overflow-x-auto">
+        <table class="w-full text-left border-collapse">
+          <thead>
+            <tr class="bg-zinc-950/80 text-dim-gray uppercase text-xs font-bold tracking-wider border-b border-zinc-800">
+              <th class="p-5">Séance</th>
+              <th class="p-5">Date & Heure</th>
+              <th class="p-5">Remplissage</th>
+              <th class="p-5 text-right">Actions</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-zinc-800/50">
+            <tr *ngFor="let activity of activities" class="hover:bg-zinc-800/20 transition-colors group">
+              <!-- Séance -->
+              <td class="p-5">
+                <div class="flex items-center gap-4">
+                  <div class="w-10 h-10 rounded-xl bg-zinc-800 flex items-center justify-center text-volt border border-zinc-700">
+                    <lucide-icon [img]="icons.Users" class="w-5 h-5"></lucide-icon>
+                  </div>
+                  <div>
+                    <h3 class="font-bold text-white text-lg leading-none">{{ activity.name }}</h3>
+                    <span class="text-xs text-dim-gray uppercase font-medium mt-1 block">{{ activity.type }}</span>
+                  </div>
+                </div>
+              </td>
+
+              <!-- Date -->
+              <td class="p-5">
+                <div class="flex flex-col">
+                  <span class="text-stone-300 font-medium flex items-center gap-2">
+                    <lucide-icon [img]="icons.Calendar" class="w-4 h-4 text-dim-gray"></lucide-icon>
+                    {{ activity.dateTime | date:'dd MMM yyyy' }}
+                  </span>
+                  <span class="text-stone-400 text-sm flex items-center gap-2 mt-1">
+                    <lucide-icon [img]="icons.Clock" class="w-4 h-4 text-dim-gray"></lucide-icon>
+                    {{ activity.dateTime | date:'HH:mm' }} ({{ activity.durationMinutes }}min)
+                  </span>
+                </div>
+              </td>
+
+              <!-- Remplissage -->
+              <td class="p-5">
+                <div class="flex items-center gap-3">
+                  <span class="font-bold text-white whitespace-nowrap">
+                    {{ activity.currentParticipantsCount }} / {{ activity.maxParticipants }}
+                  </span>
+                  <span class="px-2 py-1 rounded-md text-[10px] font-bold tracking-wider uppercase"
+                        [ngClass]="getFillBadgeColor(activity.currentParticipantsCount, activity.maxParticipants)">
+                    {{ getFillText(activity.currentParticipantsCount, activity.maxParticipants) }}
+                  </span>
+                </div>
+              </td>
+
+              <!-- Actions -->
+              <td class="p-5 text-right">
+                <div class="flex items-center justify-end gap-2">
+                  <button 
+                    (click)="openParticipants(activity)"
+                    class="p-2 bg-zinc-800 hover:bg-zinc-700 text-stone-300 hover:text-white rounded-lg transition-colors group-hover:bg-zinc-700 border border-transparent hover:border-zinc-600"
+                    title="Voir les inscrits">
+                    <lucide-icon [img]="icons.Users" class="w-4 h-4"></lucide-icon>
+                  </button>
+                  <button 
+                    (click)="deleteActivity(activity.id)"
+                    class="p-2 bg-red-500/10 hover:bg-red-500/20 text-red-500 rounded-lg transition-colors border border-transparent hover:border-red-500/30"
+                    title="Supprimer">
+                    <lucide-icon [img]="icons.Trash" class="w-4 h-4"></lucide-icon>
+                  </button>
+                </div>
+              </td>
+            </tr>
+            <tr *ngIf="activities.length === 0">
+              <td colspan="4" class="p-10 text-center text-dim-gray font-medium">
+                Vous n'avez créé aucune séance pour le moment.
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Création -->
+<div *ngIf="showCreateModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
+  <div class="bg-zinc-900 border border-zinc-800 w-full max-w-lg rounded-3xl p-6 md:p-8 shadow-2xl relative overflow-hidden">
+    <!-- Glow -->
+    <div class="absolute top-0 right-0 w-64 h-64 bg-volt/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none"></div>
+    
+    <h2 class="text-2xl font-black text-white mb-6 flex items-center gap-3 relative z-10">
+      <lucide-icon [img]="icons.Plus" class="w-6 h-6 text-volt"></lucide-icon>
+      Ajouter une Séance
+    </h2>
+
+    <form (ngSubmit)="onSubmitCreate()" #createForm="ngForm" class="space-y-4 relative z-10">
+      
+      <div>
+        <label class="block text-dim-gray text-xs font-bold uppercase tracking-wider mb-2">Nom de la Séance</label>
+        <input type="text" [(ngModel)]="newActivity.name" name="name" required
+               class="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-volt focus:ring-1 focus:ring-volt transition-all"
+               placeholder="Ex: HIIT Full Body Xtreme">
+      </div>
+
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <label class="block text-dim-gray text-xs font-bold uppercase tracking-wider mb-2">Type</label>
+          <select [(ngModel)]="newActivity.type" name="type" required
+                  class="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-volt transition-all appearance-none cursor-pointer">
+            <option value="CROSSFIT">Crossfit</option>
+            <option value="CARDIO">Cardio</option>
+            <option value="MUSCULATION">Musculation</option>
+            <option value="YOGA">Yoga</option>
+            <option value="PILATES">Pilates</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-dim-gray text-xs font-bold uppercase tracking-wider mb-2">Places Max</label>
+          <input type="number" [(ngModel)]="newActivity.maxParticipants" name="maxParticipants" required min="1"
+                 class="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-volt transition-all">
+        </div>
+      </div>
+
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <label class="block text-dim-gray text-xs font-bold uppercase tracking-wider mb-2">Date & Heure</label>
+          <input type="datetime-local" [(ngModel)]="newActivity.dateTime" name="dateTime" required
+                 class="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-volt transition-all [color-scheme:dark]">
+        </div>
+        <div>
+          <label class="block text-dim-gray text-xs font-bold uppercase tracking-wider mb-2">Durée (min)</label>
+          <input type="number" [(ngModel)]="newActivity.durationMinutes" name="durationMinutes" required min="10" step="10"
+                 class="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-volt transition-all">
+        </div>
+      </div>
+      
+      <div>
+        <label class="block text-dim-gray text-xs font-bold uppercase tracking-wider mb-2">Description / Notes</label>
+        <textarea [(ngModel)]="newActivity.description" name="description" rows="2"
+               class="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-volt transition-all resize-none"
+               placeholder="Instructions spécifiques..."></textarea>
+      </div>
+
+      <div class="flex items-center justify-end gap-3 pt-4 border-t border-zinc-800 mt-6">
+        <button type="button" (click)="closeCreateModal()"
+                class="px-5 py-2.5 rounded-xl font-bold text-stone-300 hover:text-white hover:bg-zinc-800 transition-colors">
+          Annuler
+        </button>
+        <button type="submit" [disabled]="!createForm.form.valid"
+                class="px-5 py-2.5 rounded-xl font-bold bg-volt text-black hover:bg-[#b8e53c] disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
+          Créer la Séance
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Modal Inscrits -->
+<div *ngIf="showParticipantsModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
+  <div class="bg-zinc-900 border border-zinc-800 w-full max-w-md rounded-3xl p-6 shadow-2xl relative">
+    <button (click)="closeParticipants()" class="absolute top-6 right-6 text-dim-gray hover:text-white transition-colors">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+    </button>
+    
+    <h2 class="text-xl font-black text-white mb-1 pr-8 leading-tight">Membres Inscrits</h2>
+    <p class="text-volt text-sm font-bold mb-6">{{ selectedActivity?.name }} - {{ selectedActivity?.dateTime | date:'dd/MM HH:mm' }}</p>
+
+    <!-- Zone contenant les participants (Backend API à développer par la suite) -->
+    <div class="space-y-3 max-h-[60vh] overflow-y-auto pr-2 custom-scrollbar">
+      
+      <!-- Boucle sur les mock participants pour le design -->
+      <div *ngFor="let p of mockParticipants" class="flex items-center gap-4 p-3 rounded-xl bg-zinc-950 border border-zinc-800">
+        <div class="w-10 h-10 rounded-full bg-stone-800 flex items-center justify-center font-bold text-volt">
+          {{ p.name.charAt(0) }}
+        </div>
+        <div class="flex-1">
+          <h4 class="font-bold text-white text-sm">{{ p.name }}</h4>
+          <span class="text-xs text-dim-gray">{{ p.email }}</span>
+        </div>
+        <div>
+          <span class="text-[10px] uppercase font-bold px-2 py-1 rounded bg-zinc-800 text-stone-300 border border-zinc-700">
+            {{ p.level }}
+          </span>
+        </div>
+      </div>
+
+    </div>
+    
+    <div class="mt-4 pt-4 border-t border-zinc-800">
+      <div class="bg-blue-900/20 border border-blue-900/50 rounded-lg p-3 text-xs text-blue-400 font-medium">
+        ℹ️ <b>Info Dév :</b> La récupération réelle des inscrits nécessite l'ajout d'une route Backend <code>GET /api/activities/{{selectedActivity?.id}}/members</code>. Ces données sont des maquettes pour le design.
+      </div>
+    </div>
+  </div>
+</div>

@@ -69,6 +69,7 @@ export class MainLayoutComponent implements OnInit {
     } else if (this.role === 'COACH') {
       this.menuItems = [
         { label: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
+        { label: 'Gestion', path: '/coach/dashboard', icon: ClipboardList },
         { label: 'Mes Cours', path: '/my-classes', icon: Dumbbell },
         { label: 'Créer Programme', path: '/create-program', icon: PlusCircle },
       ];
