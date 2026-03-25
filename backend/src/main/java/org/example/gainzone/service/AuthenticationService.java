@@ -24,7 +24,7 @@ public class AuthenticationService {
 
     public AuthResponse register(RegisterRequest request) {
         Role targetRole = Role.MEMBER; // Par défaut
-        
+
         if (request.getRole() != null) {
             String roleStr = request.getRole().trim().toUpperCase();
             if ("COACH".equals(roleStr)) {
@@ -44,10 +44,10 @@ public class AuthenticationService {
                 .phone(request.getPhone())
                 .role(targetRole)
                 .build();
-        
+
         userRepository.save(user);
         var jwtToken = jwtService.generateToken(user);
-        
+
         return AuthResponse.builder()
                 .token(jwtToken)
                 .username(user.getAccountUsername())
@@ -60,15 +60,13 @@ public class AuthenticationService {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         request.getEmail(),
-                        request.getPassword()
-                )
-        );
-        
+                        request.getPassword()));
+
         var user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new IllegalArgumentException("Email ou mot de passe incorrect"));
-                
+
         var jwtToken = jwtService.generateToken(user);
-        
+        System.out.print("l7waaaaaaaaaaa hada " + user.getAuthorities());
         return AuthResponse.builder()
                 .token(jwtToken)
                 .username(user.getAccountUsername())

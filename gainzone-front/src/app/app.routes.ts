@@ -11,6 +11,7 @@ export const routes: Routes = [
     canActivate: [authGuard],
     children: [
       { path: 'dashboard', loadComponent: () => import('./pages/dashboard/dashboard.component').then(m => m.DashboardComponent) },
+      { path: 'activities', loadComponent: () => import('./pages/activity/activity.component').then(m => m.ActivityComponent), canActivate: [authGuard] },
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' }
     ]
   },

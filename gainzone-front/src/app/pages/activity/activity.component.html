@@ -1,0 +1,103 @@
+<div class="min-h-screen bg-dark-bg text-white">
+  <div class="max-w-7xl mx-auto">
+    <header class="mb-10">
+      <h1 class="text-4xl font-black tracking-wide text-white">
+        Activités <span class="text-volt">GainZone</span>
+      </h1>
+      <p class="text-dim-gray mt-2 text-lg">Découvrez nos séances intenses et réservez votre place.</p>
+    </header>
+
+    <div *ngIf="errorMessage" class="bg-red-900/30 border border-red-900 text-red-400 px-4 py-3 rounded-xl mb-8 font-medium">
+      {{ errorMessage }}
+    </div>
+
+    <!-- Grille d'activités -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      
+      <div *ngFor="let activity of activities" 
+           class="bg-zinc-900 border border-zinc-800 rounded-3xl p-6 shadow-2xl hover:border-volt/50 transition-colors flex flex-col group relative overflow-hidden">
+        
+        <!-- Éclat du hover -->
+        <div class="absolute -inset-20 bg-volt/5 blur-3xl rounded-full opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity duration-500"></div>
+
+        <div class="relative z-10 flex-col flex h-full justify-between">
+          <!-- En-tête de la carte -->
+          <div class="mb-6">
+            <div class="flex justify-between items-start mb-3">
+              <span class="px-3 py-1 bg-zinc-800 text-volt text-xs font-bold uppercase tracking-wider rounded-lg border border-volt/20">
+                {{ activity.type || 'SÉANCE' }}
+              </span>
+            </div>
+            <h3 class="text-2xl font-black text-white leading-tight">{{ activity.name }}</h3>
+            <p class="text-stone-400 text-sm mt-2 line-clamp-2">{{ activity.description }}</p>
+          </div>
+
+          <!-- Détails -->
+          <div class="space-y-3 mb-6">
+            <div class="flex items-center gap-3 text-stone-300">
+              <lucide-icon [img]="icons.User" class="w-5 h-5 text-dim-gray"></lucide-icon>
+              <span class="font-medium text-white">{{ activity.coachName || 'Coach à définir' }}</span>
+            </div>
+            
+            <div class="flex items-center gap-3 text-stone-300">
+              <lucide-icon [img]="icons.Calendar" class="w-5 h-5 text-dim-gray"></lucide-icon>
+              <span class="font-medium">{{ activity.dateTime | date:'dd/MM/yyyy à HH:mm' }}</span>
+            </div>
+
+            <div class="flex items-center gap-3 text-stone-300">
+              <lucide-icon [img]="icons.Clock" class="w-5 h-5 text-dim-gray"></lucide-icon>
+              <span class="font-medium">{{ activity.durationMinutes }} min</span>
+            </div>
+          </div>
+
+          <!-- Places et Barre de progression -->
+          <div class="mt-auto mb-6">
+            <div class="flex justify-between text-sm font-medium mb-2">
+              <span class="flex items-center gap-2 text-stone-300">
+                <lucide-icon [img]="icons.Users" class="w-4 h-4"></lucide-icon>
+                Places
+              </span>
+              <span [ngClass]="{'text-volt': activity.currentParticipantsCount < activity.maxParticipants, 'text-red-500': activity.currentParticipantsCount >= activity.maxParticipants}">
+                {{ activity.currentParticipantsCount }} / {{ activity.maxParticipants }}
+              </span>
+            </div>
+            <div class="w-full bg-zinc-800 rounded-full h-2">
+              <div class="h-2 rounded-full transition-all duration-500" 
+                   [ngClass]="{'bg-volt': activity.currentParticipantsCount < activity.maxParticipants, 'bg-red-500': activity.currentParticipantsCount >= activity.maxParticipants}"
+                   [style.width]="getProgressBarWidth(activity.currentParticipantsCount, activity.maxParticipants)">
+              </div>
+            </div>
+          </div>
+
+          <!-- Bouton de Réservation -->
+          <button 
+            *ngIf="!joinedActivities.has(activity.id) && activity.currentParticipantsCount < activity.maxParticipants"
+            (click)="joinActivity(activity.id)"
+            class="w-full py-3 bg-zinc-800 text-white font-bold rounded-xl border border-zinc-700 hover:bg-volt hover:text-black hover:border-volt active:scale-95 transition-all flex items-center justify-center gap-2 group-hover:shadow-[0_0_20px_rgba(205,251,71,0.2)]">
+            Réserver ma place
+          </button>
+
+          <button 
+            *ngIf="joinedActivities.has(activity.id)"
+            disabled
+            class="w-full py-3 bg-volt/10 text-volt border border-volt font-bold rounded-xl flex items-center justify-center gap-2 cursor-not-allowed">
+            Inscrit ✅
+          </button>
+
+          <button 
+            *ngIf="!joinedActivities.has(activity.id) && activity.currentParticipantsCount >= activity.maxParticipants"
+            disabled
+            class="w-full py-3 bg-red-900/20 text-red-500 border border-red-900/50 font-bold rounded-xl flex items-center justify-center gap-2 cursor-not-allowed">
+            Séance Complète
+          </button>
+        </div>
+      </div>
+
+    </div>
+
+    <div *ngIf="activities.length === 0" class="text-center py-20 text-dim-gray font-medium text-xl">
+      Aucune activité disponible pour le moment.
+    </div>
+
+  </div>
+</div>

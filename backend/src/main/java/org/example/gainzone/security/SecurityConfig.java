@@ -34,17 +34,8 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable()) // Désactivation CSRF pour API Stateless
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll() // Autoriser OPTIONS (Preflight)
                         .requestMatchers("/api/auth/**").permitAll()
-
-                        .requestMatchers("/api/admin/**").hasRole("ADMIN")
-
-                // MEMBER : Inscription aux activités
-                .requestMatchers(HttpMethod.POST, "/api/activities/*/join").hasRole("MEMBER")
-
-                        .requestMatchers("/api/activities/**").hasAnyRole("COACH", "ADMIN")
-
-                        .requestMatchers("/api/analysis/**").hasRole("MEMBER")
-
                         .anyRequest().authenticated())
                 .authenticationProvider(authenticationProvider)
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
