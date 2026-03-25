@@ -1,15 +1,146 @@
-<div class="min-h-screen bg-dark-bg text-white p-8">
+<div class="min-h-screen bg-dark-bg text-white">
   <div class="max-w-7xl mx-auto">
-    <header class="mb-8">
-      <h1 class="text-3xl font-bold">Tableau de bord</h1>
-      <p class="text-dim-gray mt-1">Bienvenue, <span class="text-volt font-semibold">{{ username || 'Utilisateur' }}</span> !</p>
+    <header class="mb-10">
+      <h1 class="text-4xl font-black tracking-wide">Tableau de bord</h1>
+      <p class="text-dim-gray mt-2 text-lg">Bienvenue, <span class="text-volt font-bold">{{ username || 'Utilisateur' }}</span> ! Prêt à atteindre vos objectifs ?</p>
     </header>
 
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-      <div class="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 shadow-xl">
-        <h3 class="text-dim-gray text-sm font-medium">Statut</h3>
-        <p class="text-2xl font-bold mt-2 text-volt">Connecté</p>
+    <!-- Vue Spécifique MEMBER -->
+    <ng-container *ngIf="role === 'MEMBER'">
+      
+      <!-- Top Cards (Statistiques Rapides) -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+        <!-- Poids -->
+        <div class="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 shadow-xl flex items-center justify-between hover:border-volt/50 transition-colors">
+          <div>
+            <h3 class="text-dim-gray text-sm font-medium uppercase tracking-wider">Poids Actuel</h3>
+            <p class="text-3xl font-black mt-2 text-white">{{ profileData?.weight || '--' }} <span class="text-lg text-volt">kg</span></p>
+          </div>
+          <div class="bg-volt/10 p-3 rounded-xl border border-volt/20">
+            <lucide-icon [img]="icons.Weight" class="w-8 h-8 text-volt"></lucide-icon>
+          </div>
+        </div>
+
+        <!-- Objectif -->
+        <div class="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 shadow-xl flex items-center justify-between hover:border-volt/50 transition-colors">
+          <div>
+            <h3 class="text-dim-gray text-sm font-medium uppercase tracking-wider">Objectif</h3>
+            <p class="text-2xl font-bold mt-2 text-white">{{ getDisplayGoal(profileData?.goal) }}</p>
+          </div>
+          <div class="bg-volt/10 p-3 rounded-xl border border-volt/20">
+            <lucide-icon [img]="icons.Target" class="w-8 h-8 text-volt"></lucide-icon>
+          </div>
+        </div>
+
+        <!-- Niveau Fitness -->
+        <div class="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 shadow-xl flex items-center justify-between hover:border-volt/50 transition-colors">
+          <div>
+            <h3 class="text-dim-gray text-sm font-medium uppercase tracking-wider">Niveau Fitness</h3>
+            <p class="text-2xl font-bold mt-2 text-white">{{ getDisplayLevel(profileData?.fitnessLevel) }}</p>
+          </div>
+          <div class="bg-volt/10 p-3 rounded-xl border border-volt/20">
+            <lucide-icon [img]="icons.Activity" class="w-8 h-8 text-volt"></lucide-icon>
+          </div>
+        </div>
       </div>
-    </div>
+
+      <!-- Main Section : Formulaire de Profil -->
+      <div class="bg-zinc-900 border border-zinc-800 rounded-3xl p-8 shadow-2xl">
+        <div class="mb-8 border-b border-zinc-800 pb-4">
+          <h2 class="text-2xl font-bold text-white">Données Physiques</h2>
+          <p class="text-dim-gray text-sm mt-1">Mettez à jour vos informations pour un suivi personnalisé.</p>
+        </div>
+
+        <!-- Messages Flash -->
+        <div *ngIf="successMessage" class="bg-volt/10 border border-volt text-volt px-4 py-3 rounded-xl mb-6 font-medium">
+          {{ successMessage }}
+        </div>
+        <div *ngIf="errorMessage" class="bg-red-900/30 border border-red-900 text-red-400 px-4 py-3 rounded-xl mb-6 font-medium">
+          {{ errorMessage }}
+        </div>
+
+        <form [formGroup]="profileForm" (ngSubmit)="onSubmit()" class="space-y-6">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            
+            <!-- Age -->
+            <div>
+              <label class="block text-sm font-medium text-stone-300 mb-2">Âge</label>
+              <input type="number" formControlName="age" placeholder="ex: 25"
+                class="w-full px-4 py-3 bg-stone-800 border border-stone-700/50 rounded-xl text-white placeholder-stone-500 focus:outline-none focus:border-volt focus:ring-1 focus:ring-volt transition-all" />
+            </div>
+
+            <!-- Genre -->
+            <div>
+              <label class="block text-sm font-medium text-stone-300 mb-2">Genre</label>
+              <select formControlName="gender"
+                class="w-full px-4 py-3 bg-stone-800 border border-stone-700/50 rounded-xl text-white focus:outline-none focus:border-volt focus:ring-1 focus:ring-volt transition-all appearance-none cursor-pointer">
+                <option value="">Sélectionner</option>
+                <option value="M">Homme</option>
+                <option value="F">Femme</option>
+              </select>
+            </div>
+
+            <!-- Poids -->
+            <div>
+              <label class="block text-sm font-medium text-stone-300 mb-2">Poids (kg)</label>
+              <input type="number" step="0.1" formControlName="weight" placeholder="ex: 75.5"
+                class="w-full px-4 py-3 bg-stone-800 border border-stone-700/50 rounded-xl text-white placeholder-stone-500 focus:outline-none focus:border-volt focus:ring-1 focus:ring-volt transition-all" />
+            </div>
+
+            <!-- Taille -->
+            <div>
+              <label class="block text-sm font-medium text-stone-300 mb-2">Taille (cm)</label>
+              <input type="number" formControlName="height" placeholder="ex: 180"
+                class="w-full px-4 py-3 bg-stone-800 border border-stone-700/50 rounded-xl text-white placeholder-stone-500 focus:outline-none focus:border-volt focus:ring-1 focus:ring-volt transition-all" />
+            </div>
+
+            <!-- Objectif -->
+            <div>
+              <label class="block text-sm font-medium text-stone-300 mb-2">Objectif Personnel</label>
+              <select formControlName="goal"
+                class="w-full px-4 py-3 bg-stone-800 border border-stone-700/50 rounded-xl text-white focus:outline-none focus:border-volt focus:ring-1 focus:ring-volt transition-all appearance-none cursor-pointer">
+                <option value="">Sélectionner un objectif</option>
+                <option value="WEIGHT_LOSS">Perte de poids</option>
+                <option value="MUSCLE_GAIN">Prise de masse</option>
+                <option value="ENDURANCE">Améliorer l'endurance</option>
+                <option value="MAINTENANCE">Maintien de la forme</option>
+              </select>
+            </div>
+
+            <!-- Niveau Fitness -->
+            <div>
+              <label class="block text-sm font-medium text-stone-300 mb-2">Niveau Actuel</label>
+              <select formControlName="fitnessLevel"
+                class="w-full px-4 py-3 bg-stone-800 border border-stone-700/50 rounded-xl text-white focus:outline-none focus:border-volt focus:ring-1 focus:ring-volt transition-all appearance-none cursor-pointer">
+                <option value="">Sélectionner un niveau</option>
+                <option value="BEGINNER">Débutant</option>
+                <option value="INTERMEDIATE">Intermédiaire</option>
+                <option value="ADVANCED">Avancé</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Submit Button -->
+          <div class="pt-6 flex justify-end">
+            <button type="submit" [disabled]="profileForm.invalid || isLoading"
+              class="px-8 py-3 bg-volt text-black font-bold rounded-xl hover:bg-lime-400 focus:ring-4 focus:ring-lime-700/50 active:scale-95 transition-all shadow-lg shadow-volt/20 disabled:opacity-50 flex items-center gap-2">
+              <span *ngIf="!isLoading">Enregistrer les modifications</span>
+              <span *ngIf="isLoading">Enregistrement...</span>
+            </button>
+          </div>
+        </form>
+      </div>
+    </ng-container>
+    
+    <!-- Autre vue possible pour COACH / ADMIN selon besoins futurs -->
+    <ng-container *ngIf="role !== 'MEMBER'">
+      <div class="bg-zinc-900 border border-zinc-800 rounded-3xl p-8 shadow-2xl flex items-center justify-center min-h-[400px]">
+        <div class="text-center">
+          <h2 class="text-2xl font-bold text-white mb-2">Espace {{ role }}</h2>
+          <p class="text-dim-gray">Le tableau de bord spécifique sera implémenté prochainement.</p>
+        </div>
+      </div>
+    </ng-container>
+
   </div>
 </div>
