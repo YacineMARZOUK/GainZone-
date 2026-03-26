@@ -4,9 +4,10 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { AuthService } from '../../services/auth.service';
 import { MemberService } from '../../services/member.service';
 import { AiService } from '../../services/ai.service';
+import { ActivityService } from '../../services/activity.service';
 import { MemberProfileResponse } from '../../models/member.model';
 import { AITrainingPlanResponse } from '../../models/ai.model';
-import { LucideAngularModule, Weight, Target, Activity, Sparkles } from 'lucide-angular';
+import { LucideAngularModule, Weight, Target, Activity, Sparkles, Users, Calendar, Dumbbell } from 'lucide-angular';
 import { finalize } from 'rxjs/operators';
 
 @Component({
@@ -18,7 +19,7 @@ import { finalize } from 'rxjs/operators';
 export class DashboardComponent implements OnInit {
   username: string | null = '';
   role: string | null = '';
-  
+
   profileForm!: FormGroup;
   profileData: MemberProfileResponse | null = null;
   isLoading = false;
@@ -30,18 +31,25 @@ export class DashboardComponent implements OnInit {
   isAiLoading = false;
   aiErrorMessage = '';
 
+  // Coach Stats
+  stats: any = { totalMembers: 0, totalActivities: 0, totalPrograms: 0 };
+
   // Icons used in template
   icons = {
     Weight,
     Target,
     Activity,
-    Sparkles
+    Sparkles,
+    Users,
+    Calendar,
+    Dumbbell
   };
 
   constructor(
     private authService: AuthService,
     private memberService: MemberService,
     private aiService: AiService,
+    private activityService: ActivityService,
     private fb: FormBuilder,
     private cdr: ChangeDetectorRef
   ) { }
@@ -54,7 +62,19 @@ export class DashboardComponent implements OnInit {
 
     if (this.role === 'MEMBER') {
       this.loadProfile();
+    } else if (this.role === 'COACH') {
+      this.loadCoachStats();
     }
+  }
+
+  loadCoachStats(): void {
+    this.activityService.getCoachStats().subscribe({
+      next: (data) => {
+        this.stats = data;
+        this.cdr.detectChanges();
+      },
+      error: (err) => console.error("Erreur stats", err)
+    });
   }
 
   initForm(): void {
@@ -118,7 +138,7 @@ export class DashboardComponent implements OnInit {
     this.isAiLoading = true;
     this.aiErrorMessage = '';
     this.aiPlan = null;
-    
+
     this.aiService.generatePlan()
       .pipe(
         finalize(() => {

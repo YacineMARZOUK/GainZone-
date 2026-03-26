@@ -34,4 +34,14 @@ export class ActivityService {
   getMembersByActivityId(id: number): Observable<any[]> {
     return this.http.get<any[]>(`${this.apiUrl}/${id}/members`);
   }
+
+  getCoachStats(): Observable<DashboardStatsResponse> {
+    return this.http.get<DashboardStatsResponse>('http://localhost:8081/api/stats/coach');
+  }
+}
+
+export interface DashboardStatsResponse {
+  totalMembers: number;
+  totalActivities: number;
+  totalPrograms: number;
 }

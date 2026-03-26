@@ -17,6 +17,51 @@
       </button>
     </header>
 
+    <!-- Stats Grid -->
+    <div *ngIf="stats" class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8 mt-6">
+      <!-- Carte Membres -->
+      <div class="bg-zinc-900 border border-zinc-800 rounded-3xl p-6 shadow-2xl relative overflow-hidden group hover:border-volt/30 transition-all">
+        <div class="absolute -inset-20 bg-volt/5 blur-3xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+        <div class="relative z-10 flex items-center gap-5">
+          <div class="w-14 h-14 rounded-2xl bg-zinc-950 flex items-center justify-center text-volt border border-zinc-800 shadow-inner">
+            <lucide-icon [img]="icons.Users" class="w-7 h-7"></lucide-icon>
+          </div>
+          <div>
+            <p class="text-dim-gray text-sm uppercase font-bold tracking-wider mb-1">Membres Suivis</p>
+            <h3 class="text-4xl font-black text-white">{{ stats.totalMembers }}</h3>
+          </div>
+        </div>
+      </div>
+
+      <!-- Carte Séances -->
+      <div class="bg-zinc-900 border border-zinc-800 rounded-3xl p-6 shadow-2xl relative overflow-hidden group hover:border-volt/30 transition-all">
+        <div class="absolute -inset-20 bg-volt/5 blur-3xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+        <div class="relative z-10 flex items-center gap-5">
+          <div class="w-14 h-14 rounded-2xl bg-zinc-950 flex items-center justify-center text-volt border border-zinc-800 shadow-inner">
+            <lucide-icon [img]="icons.Calendar" class="w-7 h-7"></lucide-icon>
+          </div>
+          <div>
+            <p class="text-dim-gray text-sm uppercase font-bold tracking-wider mb-1">Mes Séances</p>
+            <h3 class="text-4xl font-black text-white">{{ stats.totalActivities }}</h3>
+          </div>
+        </div>
+      </div>
+
+      <!-- Carte Programmes -->
+      <div class="bg-zinc-900 border border-zinc-800 rounded-3xl p-6 shadow-2xl relative overflow-hidden group hover:border-volt/30 transition-all">
+        <div class="absolute -inset-20 bg-volt/5 blur-3xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+        <div class="relative z-10 flex items-center gap-5">
+          <div class="w-14 h-14 rounded-2xl bg-zinc-950 flex items-center justify-center text-volt border border-zinc-800 shadow-inner">
+            <lucide-icon [img]="icons.Dumbbell" class="w-7 h-7"></lucide-icon>
+          </div>
+          <div>
+            <p class="text-dim-gray text-sm uppercase font-bold tracking-wider mb-1">Mes Programmes</p>
+            <h3 class="text-4xl font-black text-white">{{ stats.totalPrograms }}</h3>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <div *ngIf="errorMessage" class="bg-red-900/30 border border-red-900 text-red-400 px-4 py-3 rounded-xl mb-8 font-medium">
       {{ errorMessage }}
     </div>

@@ -3,7 +3,7 @@ import { CommonModule, DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivityService } from '../../services/activity.service';
 import { Activity } from '../../models/activity.model';
-import { LucideAngularModule, Users, Plus, Trash, Calendar, Clock, Edit } from 'lucide-angular';
+import { LucideAngularModule, Users, Plus, Trash, Calendar, Clock, Edit, Dumbbell } from 'lucide-angular';
 import { AuthService } from '../../services/auth.service';
 
 @Component({
@@ -15,15 +15,16 @@ import { AuthService } from '../../services/auth.service';
 })
 export class CoachDashboardComponent implements OnInit {
   activities: Activity[] = [];
-  
+  stats: any = null;
+
   // Modal state
   showCreateModal = false;
   showParticipantsModal = false;
   selectedActivity: Activity | null = null;
-  
+
   isEditing = false;
   editingId: number | null = null;
-  
+
   // New/Edit Activity Form
   newActivity = {
     name: '',
@@ -37,14 +38,14 @@ export class CoachDashboardComponent implements OnInit {
   participants: any[] = [];
   isLoadingParticipants = false;
 
-  icons = { Users, Plus, Trash, Calendar, Clock, Edit };
+  icons = { Users, Plus, Trash, Calendar, Clock, Edit, Dumbbell };
   errorMessage = '';
 
   constructor(
-    private activityService: ActivityService, 
+    private activityService: ActivityService,
     private authService: AuthService,
     private cdr: ChangeDetectorRef
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     const role = this.authService.getRole();
@@ -52,7 +53,18 @@ export class CoachDashboardComponent implements OnInit {
       this.errorMessage = "Accès non autorisé. Vous devez être COACH.";
       return;
     }
+    this.loadStats();
     this.loadActivities();
+  }
+
+  loadStats(): void {
+    this.activityService.getCoachStats().subscribe({
+      next: (data) => {
+        this.stats = data;
+        this.cdr.detectChanges();
+      },
+      error: (err) => console.error("Erreur stats", err)
+    });
   }
 
   loadActivities(): void {
@@ -88,12 +100,12 @@ export class CoachDashboardComponent implements OnInit {
     this.isEditing = false;
     this.editingId = null;
     this.showCreateModal = true;
-    
+
     // Set default date to tomorrow
     const tomorrow = new Date();
     tomorrow.setDate(tomorrow.getDate() + 1);
     tomorrow.setHours(18, 0, 0, 0);
-    
+
     this.newActivity = {
       name: '',
       description: '',
@@ -108,13 +120,13 @@ export class CoachDashboardComponent implements OnInit {
     this.isEditing = true;
     this.editingId = activity.id;
     this.showCreateModal = true;
-    
+
     // Convert to ISO string for datetime-local
     const d = new Date(activity.dateTime);
     // Pad functions to ensure 2 digits
     const pad = (n: number) => n.toString().padStart(2, '0');
-    const isoDateTime = `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
-    
+    const isoDateTime = `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+
     this.newActivity = {
       name: activity.name,
       description: activity.description || '',
@@ -133,7 +145,7 @@ export class CoachDashboardComponent implements OnInit {
     const request = {
       ...this.newActivity
     };
-    
+
     if (this.isEditing && this.editingId) {
       this.activityService.updateActivity(this.editingId, request).subscribe({
         next: () => {
@@ -160,7 +172,7 @@ export class CoachDashboardComponent implements OnInit {
   }
 
   deleteActivity(id: number): void {
-    if(!confirm('Êtes-vous sûr de vouloir supprimer cette séance ?')) return;
+    if (!confirm('Êtes-vous sûr de vouloir supprimer cette séance ?')) return;
 
     this.activityService.deleteActivity(id).subscribe({
       next: () => {
@@ -174,7 +186,7 @@ export class CoachDashboardComponent implements OnInit {
     this.selectedActivity = activity;
     this.showParticipantsModal = true;
     this.isLoadingParticipants = true;
-    
+
     this.activityService.getMembersByActivityId(activity.id).subscribe({
       next: (data) => {
         this.participants = data;

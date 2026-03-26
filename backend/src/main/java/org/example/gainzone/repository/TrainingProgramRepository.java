@@ -7,4 +7,5 @@ import java.util.List;
 
 public interface TrainingProgramRepository extends JpaRepository<TrainingProgram, Long> {
     List<TrainingProgram> findByMemberId(Long memberId);
+    long countByCoachId(Long coachId);
 }
