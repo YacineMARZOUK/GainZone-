@@ -24,58 +24,58 @@ import java.util.List;
 @RequiredArgsConstructor
 public class OrderServiceImpl implements OrderService {
 
-    private final OrderRepository orderRepository;
-    private final ProductRepository productRepository;
-    private final UserRepository userRepository;
+        private final OrderRepository orderRepository;
+        private final ProductRepository productRepository;
+        private final UserRepository userRepository;
 
-    @Override
-    @Transactional
-    public OrderResponse placeOrder(OrderRequest request) {
-        String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("Utilisateur non trouvé"));
+        @Override
+        @Transactional
+        public OrderResponse placeOrder(OrderRequest request) {
+                String email = SecurityContextHolder.getContext().getAuthentication().getName();
+                User user = userRepository.findByEmail(email)
+                                .orElseThrow(() -> new RuntimeException("Utilisateur non trouvé"));
 
-        Order order = Order.builder()
-                .user(user)
-                .orderDate(LocalDateTime.now())
-                .orderItems(new ArrayList<>())
-                .totalPrice(BigDecimal.ZERO)
-                .build();
+                Order order = Order.builder()
+                                .user(user)
+                                .orderDate(LocalDateTime.now())
+                                .orderItems(new ArrayList<>())
+                                .totalPrice(BigDecimal.ZERO)
+                                .build();
 
-        BigDecimal total = BigDecimal.ZERO;
+                BigDecimal total = BigDecimal.ZERO;
 
-        for (OrderRequest.OrderItemRequest itemRequest : request.items()) {
-            Product product = productRepository.findById(itemRequest.productId())
-                    .orElseThrow(() -> new RuntimeException("Produit non trouvé : " + itemRequest.productId()));
+                for (OrderRequest.OrderItemRequest itemRequest : request.items()) {
+                        Product product = productRepository.findById(itemRequest.productId())
+                                        .orElseThrow(() -> new RuntimeException(
+                                                        "Produit non trouvé : " + itemRequest.productId()));
 
-            if (product.getStockQuantity() < itemRequest.quantity()) {
-                throw new RuntimeException("Stock insuffisant pour le produit : " + product.getName());
-            }
+                        if (product.getStockQuantity() < itemRequest.quantity()) {
+                                throw new RuntimeException("Stock insuffisant pour le produit : " + product.getName());
+                        }
 
-            // Mise à jour du stock
-            product.setStockQuantity(product.getStockQuantity() - itemRequest.quantity());
-            productRepository.save(product);
+                        // Mise à jour du stock
+                        product.setStockQuantity(product.getStockQuantity() - itemRequest.quantity());
+                        productRepository.save(product);
 
-            OrderItem orderItem = OrderItem.builder()
-                    .order(order)
-                    .product(product)
-                    .quantity(itemRequest.quantity())
-                    .unitPrice(product.getPrice())
-                    .build();
+                        OrderItem orderItem = OrderItem.builder()
+                                        .order(order)
+                                        .product(product)
+                                        .quantity(itemRequest.quantity())
+                                        .unitPrice(product.getPrice())
+                                        .build();
 
-            order.getOrderItems().add(orderItem);
-            
-            BigDecimal itemTotal = product.getPrice().multiply(BigDecimal.valueOf(itemRequest.quantity()));
-            total = total.add(itemTotal);
+                        order.getOrderItems().add(orderItem);
+
+                        BigDecimal itemTotal = product.getPrice().multiply(BigDecimal.valueOf(itemRequest.quantity()));
+                        total = total.add(itemTotal);
+                }
+
+                order.setTotalPrice(total);
+                Order savedOrder = orderRepository.save(order);
+
+                return new OrderResponse(
+                                savedOrder.getId(),
+                                savedOrder.getTotalPrice(),
+                                savedOrder.getOrderDate());
         }
-
-        order.setTotalPrice(total);
-        Order savedOrder = orderRepository.save(order);
-
-        return new OrderResponse(
-                savedOrder.getId(),
-                savedOrder.getTotalPrice(),
-                savedOrder.getOrderDate()
-        );
-    }
 }

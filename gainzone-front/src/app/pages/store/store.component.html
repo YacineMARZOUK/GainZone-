@@ -1,31 +1,31 @@
 <div class="min-h-screen bg-dark-bg text-white pb-20">
-  
+
   <!-- Hero Section Boutique -->
   <div class="relative bg-zinc-950 border-b border-zinc-800 py-16 mb-10 overflow-hidden">
     <!-- Décoration lumineuse de fond -->
     <div class="absolute top-0 right-1/4 w-96 h-96 bg-volt/5 rounded-full blur-3xl pointer-events-none"></div>
     <div class="absolute bottom-0 left-0 w-64 h-64 bg-volt/10 rounded-full blur-[100px] pointer-events-none"></div>
 
-    <div class="max-w-7xl mx-auto px-4 md:px-8 relative z-10 flex flex-col md:flex-row items-center justify-between gap-8">
+    <div
+      class="max-w-7xl mx-auto px-4 md:px-8 relative z-10 flex flex-col md:flex-row items-center justify-between gap-8">
       <div>
         <h1 class="text-4xl md:text-5xl font-black tracking-wider text-white mb-3">
           GainZone <span class="text-volt">Pro Shop</span>
         </h1>
         <p class="text-dim-gray text-lg max-w-xl">
-          Équipez-vous pour la performance. Découvrez notre sélection exclusive de vêtements, suppléments et équipements.
+          Équipez-vous pour la performance. Découvrez notre sélection exclusive de vêtements, suppléments et
+          équipements.
         </p>
       </div>
     </div>
   </div>
 
   <div class="max-w-7xl mx-auto px-4 md:px-8">
-    
+
     <!-- Filtres (Chips) -->
     <div class="flex flex-wrap items-center gap-3 mb-10 pb-4 border-b border-zinc-800/50">
-      <button *ngFor="let cat of categories" 
-              (click)="setCategory(cat)"
-              class="px-5 py-2 rounded-full text-sm font-bold tracking-wider transition-all duration-300"
-              [ngClass]="activeCategory() === cat 
+      <button *ngFor="let cat of categories" (click)="setCategory(cat)"
+        class="px-5 py-2 rounded-full text-sm font-bold tracking-wider transition-all duration-300" [ngClass]="activeCategory() === cat 
                          ? 'bg-volt text-black shadow-[0_0_15px_rgba(205,251,71,0.3)]' 
                          : 'bg-zinc-900 border border-zinc-800 text-stone-400 hover:text-white hover:border-volt/50'">
         {{ cat }}
@@ -40,85 +40,87 @@
 
     <!-- Grille de Produits -->
     <div *ngIf="!isLoading()" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-      
+
       @for (product of filteredProducts(); track product.id) {
-        <!-- Carte Produit -->
-        <div class="group relative bg-zinc-900 border border-zinc-800 rounded-3xl overflow-hidden hover:-translate-y-2 hover:shadow-[0_10px_40px_-10px_rgba(205,251,71,0.15)] hover:border-volt/30 transition-all duration-300 flex flex-col h-full">
-          
-          <!-- Image -->
-          <div class="relative w-full aspect-[4/5] bg-zinc-950 flex items-center justify-center overflow-hidden">
-            <!-- Overlay au hover -->
-            <div class="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity z-10 pointer-events-none"></div>
-            
-            <img *ngIf="product.imageUrl" 
-                 [src]="product.imageUrl" 
-                 [alt]="product.name" 
-                 class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
-            
-            <lucide-icon *ngIf="!product.imageUrl" 
-                         [img]="icons.Package" 
-                         class="w-16 h-16 text-zinc-800">
-            </lucide-icon>
-            
-            <!-- Badge Catégorie -->
-            <span class="absolute top-4 left-4 z-20 bg-black/70 backdrop-blur-md text-white text-[10px] uppercase font-black tracking-widest px-3 py-1.5 rounded-lg border border-white/10">
-              {{ product.category }}
-            </span>
-            
-            <!-- Badge Rupture (Optionnel, si stock == 0) -->
-            <div *ngIf="product.stockQuantity === 0" class="absolute inset-0 bg-black/60 backdrop-blur-[2px] z-30 flex items-center justify-center">
-              <span class="bg-red-500 text-white font-black px-4 py-2 uppercase tracking-widest text-sm -rotate-6 rounded-md shadow-2xl border border-red-400">
-                Rupture
-              </span>
-            </div>
+      <!-- Carte Produit -->
+      <div
+        class="group relative bg-zinc-900 border border-zinc-800 rounded-3xl overflow-hidden hover:-translate-y-2 hover:shadow-[0_10px_40px_-10px_rgba(205,251,71,0.15)] hover:border-volt/30 transition-all duration-300 flex flex-col h-full">
+
+        <!-- Image -->
+        <div class="relative w-full aspect-[4/5] bg-zinc-950 flex items-center justify-center overflow-hidden">
+          <!-- Overlay au hover -->
+          <div
+            class="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity z-10 pointer-events-none">
           </div>
 
-          <!-- Contenu -->
-          <div class="p-5 flex flex-col flex-grow relative bg-gradient-to-t from-black/20 to-transparent">
-            <!-- Nom et description -->
-            <h3 class="font-bold text-lg text-white leading-tight mb-2 group-hover:text-volt transition-colors">
-              {{ product.name }}
-            </h3>
-            <p class="text-dim-gray text-sm line-clamp-2 mb-4 flex-grow">
-              {{ product.description || 'Appareil ou vêtement haute qualité GainZone.' }}
-            </p>
-            
-            <!-- Prix et Bouton -->
-            <div class="flex items-end justify-between mt-auto">
-              <div class="flex flex-col">
-                <span class="text-[10px] text-dim-gray uppercase font-bold tracking-widest mb-1">Prix</span>
-                <span class="text-2xl font-black text-volt">
-                  {{ product.price | currency:'EUR':'symbol':'1.2-2':'fr' }}
-                </span>
-              </div>
-              
-              <button 
-                [disabled]="product.stockQuantity === 0"
-                (click)="addToCart(product)"
-                class="w-12 h-12 rounded-2xl flex items-center justify-center transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed group-hover:w-full group-hover:justify-between group-hover:px-4"
-                [ngClass]="product.stockQuantity === 0 
+          <img *ngIf="product.imageUrl" [src]="product.imageUrl" [alt]="product.name"
+            class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+
+          <lucide-icon *ngIf="!product.imageUrl" [img]="icons.Package" class="w-16 h-16 text-zinc-800">
+          </lucide-icon>
+
+          <!-- Badge Catégorie -->
+          <span
+            class="absolute top-4 left-4 z-20 bg-black/70 backdrop-blur-md text-white text-[10px] uppercase font-black tracking-widest px-3 py-1.5 rounded-lg border border-white/10">
+            {{ product.category }}
+          </span>
+
+          <!-- Badge Rupture (Optionnel, si stock == 0) -->
+          <div *ngIf="product.stockQuantity === 0"
+            class="absolute inset-0 bg-black/60 backdrop-blur-[2px] z-30 flex items-center justify-center">
+            <span
+              class="bg-red-500 text-white font-black px-4 py-2 uppercase tracking-widest text-sm -rotate-6 rounded-md shadow-2xl border border-red-400">
+              Rupture
+            </span>
+          </div>
+        </div>
+
+        <!-- Contenu -->
+        <div class="p-5 flex flex-col flex-grow relative bg-gradient-to-t from-black/20 to-transparent">
+          <!-- Nom et description -->
+          <h3 class="font-bold text-lg text-white leading-tight mb-2 group-hover:text-volt transition-colors">
+            {{ product.name }}
+          </h3>
+          <p class="text-dim-gray text-sm line-clamp-2 mb-4 flex-grow">
+            {{ product.description || 'Appareil ou vêtement haute qualité GainZone.' }}
+          </p>
+
+          <!-- Prix et Bouton -->
+          <div class="flex items-end justify-between mt-auto">
+            <div class="flex flex-col">
+              <span class="text-[10px] text-dim-gray uppercase font-bold tracking-widest mb-1">Prix</span>
+              <span class="text-2xl font-black text-volt">
+                {{ product.price | currency:'EUR':'symbol':'1.2-2':'fr' }}
+              </span>
+            </div>
+
+            <button [disabled]="product.stockQuantity === 0" (click)="addToCart(product)"
+              class="w-12 h-12 rounded-2xl flex items-center justify-center transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed group-hover:w-full group-hover:justify-between group-hover:px-4"
+              [ngClass]="product.stockQuantity === 0 
                   ? 'bg-zinc-800 text-stone-500' 
                   : 'bg-zinc-800 text-white hover:bg-volt hover:text-black hover:shadow-[0_0_15px_rgba(205,251,71,0.4)] border border-zinc-700 hover:border-transparent'">
-                <span class="font-bold hidden group-hover:block whitespace-nowrap overflow-hidden pr-2">Acheter</span>
-                <lucide-icon [img]="icons.ShoppingCart" class="w-5 h-5 flex-shrink-0"></lucide-icon>
-              </button>
-            </div>
+              <span class="font-bold hidden group-hover:block whitespace-nowrap overflow-hidden pr-2">Acheter</span>
+              <lucide-icon [img]="icons.ShoppingCart" class="w-5 h-5 flex-shrink-0"></lucide-icon>
+            </button>
           </div>
         </div>
+      </div>
       } @empty {
-        <!-- Vide State -->
-        <div class="col-span-1 sm:col-span-2 lg:col-span-4 flex flex-col items-center justify-center py-32 bg-zinc-900/50 border border-zinc-800 border-dashed rounded-3xl">
-          <div class="w-20 h-20 bg-zinc-800 rounded-full flex items-center justify-center text-dim-gray mb-4">
-            <lucide-icon [img]="icons.Package" class="w-10 h-10"></lucide-icon>
-          </div>
-          <h3 class="text-xl font-bold text-white mb-2">Aucun produit trouvé</h3>
-          <p class="text-dim-gray text-center max-w-md">La catégorie "{{ activeCategory() }}" ne contient aucun article pour l'instant.</p>
+      <!-- Vide State -->
+      <div
+        class="col-span-1 sm:col-span-2 lg:col-span-4 flex flex-col items-center justify-center py-32 bg-zinc-900/50 border border-zinc-800 border-dashed rounded-3xl">
+        <div class="w-20 h-20 bg-zinc-800 rounded-full flex items-center justify-center text-dim-gray mb-4">
+          <lucide-icon [img]="icons.Package" class="w-10 h-10"></lucide-icon>
         </div>
+        <h3 class="text-xl font-bold text-white mb-2">Aucun produit trouvé</h3>
+        <p class="text-dim-gray text-center max-w-md">La catégorie "{{ activeCategory() }}" ne contient aucun article
+          pour l'instant.</p>
+      </div>
       }
 
     </div>
   </div>
-  
+
   <!-- Composant Panier Volant -->
   <app-floating-cart></app-floating-cart>
 </div>

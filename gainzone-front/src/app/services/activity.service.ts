@@ -38,10 +38,21 @@ export class ActivityService {
   getCoachStats(): Observable<DashboardStatsResponse> {
     return this.http.get<DashboardStatsResponse>('http://localhost:8081/api/stats/coach');
   }
+
+  getAdminStats(): Observable<AdminStatsResponse> {
+    return this.http.get<AdminStatsResponse>('http://localhost:8081/api/stats/admin');
+  }
 }
 
 export interface DashboardStatsResponse {
   totalMembers: number;
   totalActivities: number;
   totalPrograms: number;
+}
+
+export interface AdminStatsResponse {
+  totalMembers: number;
+  totalCoaches: number;
+  totalProducts: number;
+  totalRevenue: number;
 }

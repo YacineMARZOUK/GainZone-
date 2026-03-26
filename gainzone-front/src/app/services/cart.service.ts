@@ -1,4 +1,4 @@
-import { Injectable, signal, computed, inject } from '@angular/core';
+import { Injectable, signal, computed } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { Product } from './admin-product.service';
@@ -12,9 +12,6 @@ export interface CartItem {
   providedIn: 'root'
 })
 export class CartService {
-  private http = inject(HttpClient);
-  private router = inject(Router);
-  
   cartItems = signal<CartItem[]>([]);
 
   totalItems = computed(() => {
@@ -25,7 +22,10 @@ export class CartService {
     return this.cartItems().reduce((total, item) => total + (item.product.price * item.quantity), 0);
   });
 
-  constructor() { }
+  constructor(
+    private http: HttpClient,
+    private router: Router
+  ) { }
 
   addToCart(product: Product): void {
     this.cartItems.update(items => {
@@ -75,7 +75,7 @@ export class CartService {
     this.http.post('http://localhost:8081/api/orders', { items }).subscribe({
       next: () => {
         alert('Commande validée avec succès ! 🎉');
-        this.cartItems.set([]); 
+        this.cartItems.set([]);
         this.router.navigate(['/dashboard']);
       },
       error: (err) => {

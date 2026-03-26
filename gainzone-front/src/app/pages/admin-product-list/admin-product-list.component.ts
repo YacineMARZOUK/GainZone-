@@ -3,7 +3,8 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AdminProductService, Product } from '../../services/admin-product.service';
 import { AuthService } from '../../services/auth.service';
-import { LucideAngularModule, Package, PlusCircle, Trash2, Edit } from 'lucide-angular';
+import { ActivityService, AdminStatsResponse } from '../../services/activity.service';
+import { LucideAngularModule, Package, PlusCircle, Trash2, Edit, Users, ShoppingBag, CreditCard } from 'lucide-angular';
 
 @Component({
   selector: 'app-admin-product-list',
@@ -13,13 +14,14 @@ import { LucideAngularModule, Package, PlusCircle, Trash2, Edit } from 'lucide-a
 })
 export class AdminProductListComponent implements OnInit {
   products = signal<Product[]>([]);
+  stats = signal<AdminStatsResponse>({ totalMembers: 0, totalCoaches: 0, totalProducts: 0, totalRevenue: 0 });
   errorMessage = '';
 
   // Modal State
   showModal = false;
   isEditing = false;
   editingId: number | null = null;
-  
+
   // Form Data
   currentProduct: any = {
     name: '',
@@ -30,12 +32,13 @@ export class AdminProductListComponent implements OnInit {
     imageUrl: ''
   };
 
-  icons = { Package, PlusCircle, Trash2, Edit };
+  icons = { Package, PlusCircle, Trash2, Edit, Users, ShoppingBag, CreditCard };
 
   constructor(
     private productService: AdminProductService,
-    private authService: AuthService
-  ) {}
+    private authService: AuthService,
+    private activityService: ActivityService
+  ) { }
 
   ngOnInit(): void {
     const role = this.authService.getRole();
@@ -44,6 +47,14 @@ export class AdminProductListComponent implements OnInit {
       return;
     }
     this.loadProducts();
+    this.loadStats();
+  }
+
+  loadStats(): void {
+    this.activityService.getAdminStats().subscribe({
+      next: (data) => this.stats.set(data),
+      error: (err) => console.error('Erreur chargement stats admin', err)
+    });
   }
 
   loadProducts(): void {
