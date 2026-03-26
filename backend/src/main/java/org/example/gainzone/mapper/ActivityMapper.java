@@ -5,10 +5,11 @@ import org.example.gainzone.dto.response.ActivityResponse;
 import org.example.gainzone.entity.Activity;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
+import org.mapstruct.ReportingPolicy;
 
 import java.util.List;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface ActivityMapper {
 
     Activity toEntity(ActivityRequest request);

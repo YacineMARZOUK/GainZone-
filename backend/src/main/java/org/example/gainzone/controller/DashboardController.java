@@ -1,6 +1,7 @@
 package org.example.gainzone.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.example.gainzone.dto.response.AdminStatsResponse;
 import org.example.gainzone.dto.response.DashboardStatsResponse;
 import org.example.gainzone.service.DashboardService;
 import org.springframework.http.ResponseEntity;
@@ -20,5 +21,11 @@ public class DashboardController {
     @PreAuthorize("hasAuthority('COACH')")
     public ResponseEntity<DashboardStatsResponse> getCoachStats() {
         return ResponseEntity.ok(dashboardService.getCoachStats());
+    }
+
+    @GetMapping("/admin")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public ResponseEntity<AdminStatsResponse> getAdminStats() {
+        return ResponseEntity.ok(dashboardService.getAdminStats());
     }
 }
