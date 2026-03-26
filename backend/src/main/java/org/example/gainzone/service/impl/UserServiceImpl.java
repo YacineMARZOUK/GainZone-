@@ -46,7 +46,7 @@ public class UserServiceImpl implements UserService {
             try {
                 user.setRole(org.example.gainzone.enums.Role.valueOf(request.getRole().toUpperCase()));
             } catch (IllegalArgumentException e) {
-                // Rôle invalide ignoré
+                
             }
         }
 
@@ -76,5 +76,11 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
         return userMapper.toResponse(user);
+    }
+
+    @Override
+    @Transactional
+    public UserResponse updateUserByAdmin(Long id, org.example.gainzone.dto.request.UserUpdateRequest request) {
+        return updateUser(id, request);
     }
 }

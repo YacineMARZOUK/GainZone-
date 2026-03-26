@@ -1,0 +1,185 @@
+<div class="min-h-screen bg-dark-bg text-white">
+  <div class="max-w-7xl mx-auto py-10 px-4">
+    
+    <!-- Header -->
+    <header class="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
+      <div>
+        <h1 class="text-4xl font-black tracking-wide text-white">
+          Gestion <span class="text-volt">Utilisateurs</span>
+        </h1>
+        <p class="text-dim-gray mt-2 text-lg">Gérez les comptes membres et coachs de la plateforme.</p>
+      </div>
+
+      <!-- Search Bar -->
+      <div class="relative w-full md:w-96">
+        <lucide-icon [img]="icons.Search" class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-dim-gray"></lucide-icon>
+        <input 
+          type="text" 
+          [ngModel]="searchQuery()"
+          (ngModelChange)="searchQuery.set($event)"
+          placeholder="Rechercher par nom, email..."
+          class="w-full bg-zinc-900 border border-zinc-800 rounded-2xl pl-12 pr-4 py-3.5 text-white focus:outline-none focus:border-volt/50 focus:ring-1 focus:ring-volt/50 transition-all shadow-xl"
+        >
+      </div>
+    </header>
+
+    @if (errorMessage) {
+      <div class="bg-red-900/30 border border-red-900 text-red-400 px-4 py-3 rounded-xl mb-8 font-medium">
+        {{ errorMessage }}
+      </div>
+    }
+
+    <!-- Users Table -->
+    <div class="bg-zinc-900 border border-zinc-800 rounded-3xl overflow-hidden shadow-2xl">
+      <div class="overflow-x-auto">
+        <table class="w-full text-left border-collapse">
+          <thead>
+            <tr class="bg-black/50 text-dim-gray uppercase text-xs font-bold tracking-widest border-b border-zinc-800">
+              <th class="p-6">Utilisateur</th>
+              <th class="p-6">Rôle</th>
+              <th class="p-6">Contact</th>
+              <th class="p-6 text-right">Actions</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-zinc-800/50">
+            @for (user of filteredUsers(); track user.id) {
+            <tr class="hover:bg-zinc-800/30 transition-colors group">
+              <!-- Info -->
+              <td class="p-6">
+                <div class="flex items-center gap-4">
+                  <div class="w-12 h-12 rounded-full bg-zinc-800 flex items-center justify-center text-volt border border-zinc-700 shadow-inner group-hover:scale-110 transition-transform">
+                    <lucide-icon [img]="user.role === 'COACH' ? icons.UserCog : icons.Users" class="w-6 h-6"></lucide-icon>
+                  </div>
+                  <div>
+                    <h3 class="font-bold text-white text-lg leading-none mb-1">{{ user.name }} {{ user.lastName }}</h3>
+                    <span class="text-xs text-dim-gray font-medium">@{{ user.username }}</span>
+                  </div>
+                </div>
+              </td>
+
+              <!-- Rôle -->
+              <td class="p-6">
+                <span class="px-3 py-1 rounded-full text-[10px] font-black tracking-widest uppercase border"
+                      [ngClass]="getRoleBadgeClass(user.role)">
+                  {{ user.role }}
+                </span>
+              </td>
+
+              <!-- Contact -->
+              <td class="p-6">
+                <div class="flex flex-col gap-1">
+                  <div class="flex items-center gap-2 text-sm text-stone-300">
+                    <lucide-icon [img]="icons.Mail" class="w-3.5 h-3.5 text-dim-gray"></lucide-icon>
+                    {{ user.email }}
+                  </div>
+                  @if (user.phone) {
+                    <div class="flex items-center gap-2 text-xs text-dim-gray">
+                      <lucide-icon [img]="icons.Phone" class="w-3.5 h-3.5"></lucide-icon>
+                      {{ user.phone }}
+                    </div>
+                  }
+                </div>
+              </td>
+
+              <!-- Actions -->
+              <td class="p-6 text-right">
+                <div class="flex items-center justify-end gap-3 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <button 
+                    (click)="openEditModal(user)"
+                    class="p-2.5 bg-blue-500/10 hover:bg-blue-500/20 text-blue-500 rounded-xl transition-all border border-blue-500/20"
+                    title="Modifier">
+                    <lucide-icon [img]="icons.Edit" class="w-4 h-4"></lucide-icon>
+                  </button>
+                  <button 
+                    (click)="deleteUser(user.id)"
+                    class="p-2.5 bg-red-500/10 hover:bg-red-500/20 text-red-500 rounded-xl transition-all border border-red-500/20"
+                    title="Supprimer">
+                    <lucide-icon [img]="icons.Trash2" class="w-4 h-4"></lucide-icon>
+                  </button>
+                </div>
+              </td>
+            </tr>
+            } @empty {
+            <tr>
+              <td colspan="4" class="p-20 text-center">
+                <div class="max-w-xs mx-auto">
+                  <lucide-icon [img]="icons.Search" class="w-12 h-12 text-zinc-800 mx-auto mb-4"></lucide-icon>
+                  <p class="text-dim-gray font-medium">Aucun utilisateur trouvé.</p>
+                </div>
+              </td>
+            </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Edition -->
+@if (showEditModal) {
+  <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90 backdrop-blur-sm transition-all animate-in fade-in duration-300">
+    <div class="bg-zinc-900 border border-zinc-800 w-full max-w-xl rounded-[2.5rem] p-8 md:p-10 shadow-[0_0_50px_rgba(0,0,0,0.5)] relative overflow-hidden">
+      
+      <!-- Close Button -->
+      <button (click)="closeModal()" class="absolute top-6 right-6 p-2 text-dim-gray hover:text-white transition-colors">
+        <lucide-icon [img]="icons.X" class="w-6 h-6"></lucide-icon>
+      </button>
+
+      <h2 class="text-3xl font-black text-white mb-8 flex items-center gap-4">
+        <lucide-icon [img]="icons.Shield" class="w-8 h-8 text-volt"></lucide-icon>
+        Modifier <span class="text-volt">le Compte</span>
+      </h2>
+
+      <form (ngSubmit)="onUpdateUser()" #userForm="ngForm" class="space-y-6">
+        
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-dim-gray text-xs font-bold uppercase tracking-widest mb-2">Prénom</label>
+            <input type="text" [(ngModel)]="editForm.name" name="name" required
+                   class="w-full bg-black border border-zinc-800 rounded-2xl px-5 py-3.5 text-white focus:outline-none focus:border-volt transition-all">
+          </div>
+          <div>
+            <label class="block text-dim-gray text-xs font-bold uppercase tracking-widest mb-2">Nom</label>
+            <input type="text" [(ngModel)]="editForm.lastName" name="lastName" required
+                   class="w-full bg-black border border-zinc-800 rounded-2xl px-5 py-3.5 text-white focus:outline-none focus:border-volt transition-all">
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-dim-gray text-xs font-bold uppercase tracking-widest mb-2">Email</label>
+          <input type="email" [(ngModel)]="editForm.email" name="email" required
+                 class="w-full bg-black border border-zinc-800 rounded-2xl px-5 py-3.5 text-white focus:outline-none focus:border-volt transition-all">
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-dim-gray text-xs font-bold uppercase tracking-widest mb-2">Rôle</label>
+            <select [(ngModel)]="editForm.role" name="role" required
+                    class="w-full bg-black border border-zinc-800 rounded-2xl px-5 py-3.5 text-white focus:outline-none focus:border-volt appearance-none cursor-pointer">
+              <option value="MEMBER">Membre</option>
+              <option value="COACH">Coach</option>
+              <option value="ADMIN">Administrateur</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-dim-gray text-xs font-bold uppercase tracking-widest mb-2">Téléphone</label>
+            <input type="text" [(ngModel)]="editForm.phone" name="phone"
+                   class="w-full bg-black border border-zinc-800 rounded-2xl px-5 py-3.5 text-white focus:outline-none focus:border-volt transition-all">
+          </div>
+        </div>
+
+        <div class="flex items-center justify-end gap-4 pt-6 mt-4">
+          <button type="button" (click)="closeModal()"
+                  class="px-8 py-4 rounded-2xl font-black text-stone-400 hover:text-white transition-colors">
+            Annuler
+          </button>
+          <button type="submit" [disabled]="!userForm.form.valid"
+                  class="px-10 py-4 bg-volt text-black font-black rounded-2xl hover:bg-[#b8e53c] hover:shadow-[0_10px_30px_rgba(205,251,71,0.2)] transition-all active:scale-95 disabled:opacity-50">
+            Enregistrer les modifications
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+}

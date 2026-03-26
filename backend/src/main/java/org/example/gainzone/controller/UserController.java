@@ -44,5 +44,27 @@ public class UserController {
     public ResponseEntity<UserResponse> getUserById(@PathVariable("id") Long id) {
         return ResponseEntity.ok(userService.getUserById(id));
     }
+
+    // --- Admin Operations ---
+
+    @GetMapping("/admin/users")
+    @org.springframework.security.access.prepost.PreAuthorize("hasAuthority('ADMIN')")
+    public ResponseEntity<List<UserResponse>> getAllUsersAdmin() {
+        return ResponseEntity.ok(userService.getAllUsers());
+    }
+
+    @PutMapping("/admin/users/{id}")
+    @org.springframework.security.access.prepost.PreAuthorize("hasAuthority('ADMIN')")
+    public ResponseEntity<UserResponse> updateUserAdmin(@PathVariable("id") Long id,
+            @RequestBody org.example.gainzone.dto.request.UserUpdateRequest request) {
+        return ResponseEntity.ok(userService.updateUserByAdmin(id, request));
+    }
+
+    @DeleteMapping("/admin/users/{id}")
+    @org.springframework.security.access.prepost.PreAuthorize("hasAuthority('ADMIN')")
+    public ResponseEntity<Void> deleteUserAdmin(@PathVariable("id") Long id) {
+        userService.deleteUser(id);
+        return ResponseEntity.noContent().build();
+    }
 }
 

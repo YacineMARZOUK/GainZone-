@@ -77,7 +77,7 @@ export class MainLayoutComponent implements OnInit {
     } else if (this.role === 'ADMIN') {
       this.menuItems = [
         { label: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
-        { label: 'Gestion Users', path: '/users', icon: Users },
+        { label: 'Gestion Utilisateurs', path: '/admin/users', icon: Users },
         { label: 'Inventaire Boutique', path: '/admin/inventory', icon: Package }
       ];
     }
