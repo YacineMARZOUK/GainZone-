@@ -66,7 +66,7 @@ export class MainLayoutComponent implements OnInit {
         { label: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
         { label: 'Activités', path: '/activities', icon: Activity },
         { label: 'Mon Programme', path: '/my-program', icon: ClipboardList },
-        { label: 'Boutique', path: '/shop', icon: Store },
+        { label: 'Boutique', path: '/store', icon: Store },
       ];
     } else if (this.role === 'COACH') {
       this.menuItems = [

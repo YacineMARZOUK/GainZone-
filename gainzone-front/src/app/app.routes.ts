@@ -11,6 +11,7 @@ export const routes: Routes = [
     canActivate: [authGuard],
     children: [
       { path: 'dashboard', loadComponent: () => import('./pages/dashboard/dashboard.component').then(m => m.DashboardComponent) },
+      { path: 'store', loadComponent: () => import('./pages/store/store.component').then(m => m.StoreComponent), canActivate: [authGuard] },
       { path: 'activities', loadComponent: () => import('./pages/activity/activity.component').then(m => m.ActivityComponent), canActivate: [authGuard] },
       { path: 'coach/classes', loadComponent: () => import('./pages/coach-dashboard/coach-dashboard.component').then(m => m.CoachDashboardComponent), canActivate: [authGuard] },
       { path: 'coach/programs', loadComponent: () => import('./pages/program-manager/program-manager.component').then(m => m.ProgramManagerComponent), canActivate: [authGuard] },
