@@ -11,7 +11,8 @@ import {
   Dumbbell,
   PlusCircle,
   Users,
-  LogOut
+  LogOut,
+  Package
 } from 'lucide-angular';
 
 interface MenuItem {
@@ -45,7 +46,8 @@ export class MainLayoutComponent implements OnInit {
     Dumbbell,
     PlusCircle,
     Users,
-    LogOut
+    LogOut,
+    Package
   };
 
   constructor(
@@ -76,7 +78,7 @@ export class MainLayoutComponent implements OnInit {
       this.menuItems = [
         { label: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
         { label: 'Gestion Users', path: '/users', icon: Users },
-        { label: 'Boutique', path: '/shop', icon: Store },
+        { label: 'Inventaire Boutique', path: '/admin/inventory', icon: Package }
       ];
     }
   }
