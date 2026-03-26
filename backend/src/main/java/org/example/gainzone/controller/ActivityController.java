@@ -54,5 +54,11 @@ public class ActivityController {
     public ResponseEntity<ActivityResponse> joinActivity(@PathVariable("id") Long id) {
         return ResponseEntity.ok(activityService.joinActivity(id));
     }
+
+    @GetMapping("/{id}/members")
+    @PreAuthorize("hasRole('COACH') or hasRole('ADMIN')")
+    public ResponseEntity<List<org.example.gainzone.dto.response.UserResponse>> getParticipants(@PathVariable("id") Long id) {
+        return ResponseEntity.ok(activityService.getParticipants(id));
+    }
 }
 

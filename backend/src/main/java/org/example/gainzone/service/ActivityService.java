@@ -17,4 +17,6 @@ public interface ActivityService {
     ActivityResponse getActivityById(Long id);
 
     ActivityResponse joinActivity(Long id);
+
+    List<org.example.gainzone.dto.response.UserResponse> getParticipants(Long activityId);
 }

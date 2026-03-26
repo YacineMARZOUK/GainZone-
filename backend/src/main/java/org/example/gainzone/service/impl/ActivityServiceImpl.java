@@ -103,4 +103,24 @@ public class ActivityServiceImpl implements ActivityService {
 
         return activityMapper.toResponse(savedActivity);
     }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<org.example.gainzone.dto.response.UserResponse> getParticipants(Long activityId) {
+        // Option 1 : on vérifie que l'activité existe (optionnel, mais propre)
+        activityRepository.findById(activityId)
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Activity not found"));
+            
+        List<User> participants = userRepository.findAllByActivitiesId(activityId);
+        
+        return participants.stream().map(user -> new org.example.gainzone.dto.response.UserResponse(
+            user.getId(),
+            user.getAccountUsername(),
+            user.getEmail(),
+            user.getName(),
+            user.getLastName(),
+            user.getRole(),
+            user.getPhone()
+        )).toList();
+    }
 }
