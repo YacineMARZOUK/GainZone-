@@ -7,7 +7,6 @@ import org.example.gainzone.service.TrainingProgramService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,39 +19,40 @@ public class TrainingProgramController {
     private final TrainingProgramService trainingProgramService;
 
     @PostMapping
-    public ResponseEntity<TrainingProgramResponse> createTrainingProgram(
-            @RequestBody TrainingProgramRequest trainingProgramRequest) {
-        return new ResponseEntity<>(trainingProgramService.createTrainingProgram(trainingProgramRequest),
-                HttpStatus.CREATED);
+    @PreAuthorize("hasAuthority('COACH')")
+    public ResponseEntity<TrainingProgramResponse> createTrainingProgram(@RequestBody TrainingProgramRequest request) {
+        return new ResponseEntity<>(trainingProgramService.createTrainingProgram(request), HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasAuthority('COACH')")
     public ResponseEntity<TrainingProgramResponse> updateTrainingProgram(@PathVariable("id") Long id,
-            @RequestBody TrainingProgramRequest trainingProgramRequest) {
-        return ResponseEntity.ok(trainingProgramService.updateTrainingProgram(id, trainingProgramRequest));
+                                                                         @RequestBody TrainingProgramRequest request) {
+        return ResponseEntity.ok(trainingProgramService.updateTrainingProgram(id, request));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<TrainingProgramResponse> deleteTrainingProgram(@PathVariable("id") Long id) {
-        return ResponseEntity.ok(trainingProgramService.deleteTrainingProgram(id));
-    }
-
-    @GetMapping("/my-programs")
-    @PreAuthorize("hasRole('MEMBER')")
-    public ResponseEntity<List<TrainingProgramResponse>> getMyTrainingPrograms() {
-        String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        return ResponseEntity.ok(trainingProgramService.getTrainingProgramsByEmail(email));
+    @PreAuthorize("hasAuthority('COACH')")
+    public ResponseEntity<Void> deleteTrainingProgram(@PathVariable("id") Long id) {
+        trainingProgramService.deleteTrainingProgram(id);
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping
-    @PreAuthorize("hasAnyRole('COACH', 'ADMIN')")
+    @PreAuthorize("hasAuthority('COACH')")
     public ResponseEntity<List<TrainingProgramResponse>> getAllTrainingPrograms() {
         return ResponseEntity.ok(trainingProgramService.getAllTrainingPrograms());
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAuthority('COACH')")
     public ResponseEntity<TrainingProgramResponse> getTrainingProgramById(@PathVariable("id") Long id) {
         return ResponseEntity.ok(trainingProgramService.getTrainingProgramById(id));
     }
-}
 
+    @GetMapping("/member/{id}")
+    @PreAuthorize("hasAuthority('MEMBER') or hasAuthority('COACH') or hasAuthority('ADMIN')")
+    public ResponseEntity<List<TrainingProgramResponse>> getTrainingProgramsByMemberId(@PathVariable("id") Long id) {
+        return ResponseEntity.ok(trainingProgramService.getTrainingProgramsByMemberId(id));
+    }
+}

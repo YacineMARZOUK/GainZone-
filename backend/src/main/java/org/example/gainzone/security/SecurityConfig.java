@@ -36,6 +36,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll() // Autoriser OPTIONS (Preflight)
                         .requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers("/api/training-programs/**").hasAnyAuthority("COACH", "MEMBER", "ADMIN")
                         .anyRequest().authenticated())
                 .authenticationProvider(authenticationProvider)
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);

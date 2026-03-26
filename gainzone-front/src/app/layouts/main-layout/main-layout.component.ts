@@ -2,16 +2,16 @@ import { Component, OnInit } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../services/auth.service';
-import { 
-  LucideAngularModule, 
-  LayoutDashboard, 
-  Activity, 
-  ClipboardList, 
-  Store, 
-  Dumbbell, 
-  PlusCircle, 
-  Users, 
-  LogOut 
+import {
+  LucideAngularModule,
+  LayoutDashboard,
+  Activity,
+  ClipboardList,
+  Store,
+  Dumbbell,
+  PlusCircle,
+  Users,
+  LogOut
 } from 'lucide-angular';
 
 interface MenuItem {
@@ -24,10 +24,10 @@ interface MenuItem {
   selector: 'app-main-layout',
   standalone: true,
   imports: [
-    RouterOutlet, 
-    RouterLink, 
-    RouterLinkActive, 
-    CommonModule, 
+    RouterOutlet,
+    RouterLink,
+    RouterLinkActive,
+    CommonModule,
     LucideAngularModule
   ],
   templateUrl: './main-layout.component.html'
@@ -35,7 +35,7 @@ interface MenuItem {
 export class MainLayoutComponent implements OnInit {
   role: string | null = '';
   menuItems: MenuItem[] = [];
-  
+
   // Icon instances mapping for template
   icons = {
     LayoutDashboard,
@@ -51,7 +51,7 @@ export class MainLayoutComponent implements OnInit {
   constructor(
     private authService: AuthService,
     private router: Router
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.role = this.authService.getRole();
@@ -69,9 +69,8 @@ export class MainLayoutComponent implements OnInit {
     } else if (this.role === 'COACH') {
       this.menuItems = [
         { label: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
-        { label: 'Gestion', path: '/coach/dashboard', icon: ClipboardList },
-        { label: 'Mes Cours', path: '/my-classes', icon: Dumbbell },
-        { label: 'Créer Programme', path: '/create-program', icon: PlusCircle },
+        { label: 'Mes Cours (Séances)', path: '/coach/classes', icon: ClipboardList },
+        { label: 'Mes Programmes', path: '/coach/programs', icon: Dumbbell }
       ];
     } else if (this.role === 'ADMIN') {
       this.menuItems = [

@@ -46,8 +46,9 @@ public class AuthenticationService {
                 .build();
 
         userRepository.save(user);
-        var jwtToken = jwtService.generateToken(user);
-
+        java.util.Map<String, Object> extraClaims = new java.util.HashMap<>();
+        extraClaims.put("role", user.getRole().name());
+        var jwtToken = jwtService.generateToken(extraClaims, user);
         return AuthResponse.builder()
                 .token(jwtToken)
                 .username(user.getAccountUsername())
@@ -65,7 +66,9 @@ public class AuthenticationService {
         var user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new IllegalArgumentException("Email ou mot de passe incorrect"));
 
-        var jwtToken = jwtService.generateToken(user);
+        java.util.Map<String, Object> extraClaims = new java.util.HashMap<>();
+        extraClaims.put("role", user.getRole().name());
+        var jwtToken = jwtService.generateToken(extraClaims, user);
         System.out.print("l7waaaaaaaaaaa hada " + user.getAuthorities());
         return AuthResponse.builder()
                 .token(jwtToken)
