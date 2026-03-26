@@ -1,12 +1,14 @@
 import { Component, OnInit, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AdminProductService, Product } from '../../services/admin-product.service';
+import { CartService } from '../../services/cart.service';
 import { LucideAngularModule, ShoppingCart, Search, Package } from 'lucide-angular';
+import { FloatingCartComponent } from '../../components/floating-cart/floating-cart.component';
 
 @Component({
   selector: 'app-store',
   standalone: true,
-  imports: [CommonModule, LucideAngularModule],
+  imports: [CommonModule, LucideAngularModule, FloatingCartComponent],
   templateUrl: './store.component.html'
 })
 export class StoreComponent implements OnInit {
@@ -24,7 +26,10 @@ export class StoreComponent implements OnInit {
     return all.filter(p => p.category === cat);
   });
 
-  constructor(private productService: AdminProductService) {}
+  constructor(
+    private productService: AdminProductService,
+    private cartService: CartService
+  ) { }
 
   ngOnInit(): void {
     this.productService.getProducts().subscribe({
@@ -45,6 +50,6 @@ export class StoreComponent implements OnInit {
 
   addToCart(product: Product): void {
     console.log('Produit ajouté au panier:', product);
-    // Futur: Implémenter le cart service
+    this.cartService.addToCart(product);
   }
 }
