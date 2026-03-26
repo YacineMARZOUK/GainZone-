@@ -21,7 +21,10 @@ export class CoachDashboardComponent implements OnInit {
   showParticipantsModal = false;
   selectedActivity: Activity | null = null;
   
-  // New Activity Form
+  isEditing = false;
+  editingId: number | null = null;
+  
+  // New/Edit Activity Form
   newActivity = {
     name: '',
     description: '',
@@ -31,12 +34,8 @@ export class CoachDashboardComponent implements OnInit {
     maxParticipants: 15
   };
 
-  // Mock participants since backend doesn't have the endpoint yet
-  mockParticipants = [
-    { name: 'Alexandre Dupont', email: 'alex@example.com', level: 'INTERMÉDIAIRE' },
-    { name: 'Sarah Connor', email: 'sarah@example.com', level: 'AVANCÉ' },
-    { name: 'Jean Valjean', email: 'jean@example.com', level: 'DÉBUTANT' }
-  ];
+  participants: any[] = [];
+  isLoadingParticipants = false;
 
   icons = { Users, Plus, Trash, Calendar, Clock, Edit };
   errorMessage = '';
@@ -59,8 +58,6 @@ export class CoachDashboardComponent implements OnInit {
   loadActivities(): void {
     this.activityService.getActivities().subscribe({
       next: (data) => {
-        // Optionnel : ne filtrer que les activités créées par ce coach si on avait son ID, 
-        // ou bien afficher tout pour le dashboard.
         this.activities = data;
         this.cdr.detectChanges();
       },
@@ -88,13 +85,44 @@ export class CoachDashboardComponent implements OnInit {
   }
 
   openCreateModal(): void {
+    this.isEditing = false;
+    this.editingId = null;
     this.showCreateModal = true;
+    
     // Set default date to tomorrow
     const tomorrow = new Date();
     tomorrow.setDate(tomorrow.getDate() + 1);
     tomorrow.setHours(18, 0, 0, 0);
-    // Format YYYY-MM-DDTHH:mm
-    this.newActivity.dateTime = tomorrow.toISOString().slice(0, 16);
+    
+    this.newActivity = {
+      name: '',
+      description: '',
+      type: 'CROSSFIT',
+      dateTime: tomorrow.toISOString().slice(0, 16),
+      durationMinutes: 60,
+      maxParticipants: 15
+    };
+  }
+
+  openEditModal(activity: Activity): void {
+    this.isEditing = true;
+    this.editingId = activity.id;
+    this.showCreateModal = true;
+    
+    // Convert to ISO string for datetime-local
+    const d = new Date(activity.dateTime);
+    // Pad functions to ensure 2 digits
+    const pad = (n: number) => n.toString().padStart(2, '0');
+    const isoDateTime = `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+    
+    this.newActivity = {
+      name: activity.name,
+      description: activity.description || '',
+      type: activity.type || 'CROSSFIT',
+      dateTime: isoDateTime,
+      durationMinutes: activity.durationMinutes,
+      maxParticipants: activity.maxParticipants
+    };
   }
 
   closeCreateModal(): void {
@@ -102,66 +130,69 @@ export class CoachDashboardComponent implements OnInit {
   }
 
   onSubmitCreate(): void {
-    // Format payload to backend specifications
-    // Note : description is mapped to type for simplicity or can be added to form
     const request = {
-      ...this.newActivity,
-      description: 'Séance de type ' + this.newActivity.type + ' organisée par le coach. ' + this.newActivity.description
+      ...this.newActivity
     };
     
-    // Call service (assuming createActivity exists in ActivityService)
-    // If not, we log what should be done
-    if ((this.activityService as any).createActivity) {
-      (this.activityService as any).createActivity(request).subscribe({
-        next: (created: Activity) => {
-          this.activities.unshift(created);
+    if (this.isEditing && this.editingId) {
+      this.activityService.updateActivity(this.editingId, request).subscribe({
+        next: () => {
           this.closeCreateModal();
-          this.cdr.detectChanges();
+          this.loadActivities(); // Raffraîchissement automatique
         },
-        error: (err: any) => {
+        error: (err) => {
+          console.error("Modification échouée", err);
+          alert("Erreur lors de la modification de la séance.");
+        }
+      });
+    } else {
+      this.activityService.createActivity(request).subscribe({
+        next: () => {
+          this.closeCreateModal();
+          this.loadActivities(); // Raffraîchissement automatique
+        },
+        error: (err) => {
           console.error("Création échouée", err);
           alert("Erreur lors de la création de la séance.");
         }
       });
-    } else {
-      console.warn("createActivity method not found in service. Simulating creation.", request);
-      // Simulate
-      this.activities.unshift({
-        id: Date.now(),
-        ...this.newActivity,
-        description: 'New Description',
-        currentParticipantsCount: 0,
-        coachId: 999,
-        coachName: 'Moi'
-      });
-      this.closeCreateModal();
     }
   }
 
   deleteActivity(id: number): void {
     if(!confirm('Êtes-vous sûr de vouloir supprimer cette séance ?')) return;
 
-    if ((this.activityService as any).deleteActivity) {
-      (this.activityService as any).deleteActivity(id).subscribe({
-        next: () => {
-          this.activities = this.activities.filter(a => a.id !== id);
-          this.cdr.detectChanges();
-        },
-        error: (err: any) => console.error("Erreur suppression", err)
-      });
-    } else {
-      console.warn("deleteActivity non implémenté. Simulation...");
-      this.activities = this.activities.filter(a => a.id !== id);
-    }
+    this.activityService.deleteActivity(id).subscribe({
+      next: () => {
+        this.loadActivities(); // Raffraîchissement automatique
+      },
+      error: (err) => console.error("Erreur suppression", err)
+    });
   }
 
   openParticipants(activity: Activity): void {
     this.selectedActivity = activity;
     this.showParticipantsModal = true;
+    this.isLoadingParticipants = true;
+    
+    this.activityService.getMembersByActivityId(activity.id).subscribe({
+      next: (data) => {
+        this.participants = data;
+        this.isLoadingParticipants = false;
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        console.error("Erreur chargement membres", err);
+        this.participants = []; // Modal sera vide
+        this.isLoadingParticipants = false;
+        this.cdr.detectChanges();
+      }
+    });
   }
 
   closeParticipants(): void {
     this.showParticipantsModal = false;
     this.selectedActivity = null;
+    this.participants = [];
   }
 }

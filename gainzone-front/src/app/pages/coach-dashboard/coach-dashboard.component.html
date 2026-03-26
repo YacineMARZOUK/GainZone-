@@ -78,12 +78,21 @@
               <!-- Actions -->
               <td class="p-5 text-right">
                 <div class="flex items-center justify-end gap-2">
+                  <!-- Voir Participants -->
                   <button 
                     (click)="openParticipants(activity)"
                     class="p-2 bg-zinc-800 hover:bg-zinc-700 text-stone-300 hover:text-white rounded-lg transition-colors group-hover:bg-zinc-700 border border-transparent hover:border-zinc-600"
                     title="Voir les inscrits">
                     <lucide-icon [img]="icons.Users" class="w-4 h-4"></lucide-icon>
                   </button>
+                  <!-- Editer -->
+                  <button 
+                    (click)="openEditModal(activity)"
+                    class="p-2 bg-blue-500/10 hover:bg-blue-500/20 text-blue-500 rounded-lg transition-colors border border-transparent hover:border-blue-500/30"
+                    title="Modifier">
+                    <lucide-icon [img]="icons.Edit" class="w-4 h-4"></lucide-icon>
+                  </button>
+                  <!-- Supprimer -->
                   <button 
                     (click)="deleteActivity(activity.id)"
                     class="p-2 bg-red-500/10 hover:bg-red-500/20 text-red-500 rounded-lg transition-colors border border-transparent hover:border-red-500/30"
@@ -105,15 +114,15 @@
   </div>
 </div>
 
-<!-- Modal Création -->
+<!-- Modal Création/Edition -->
 <div *ngIf="showCreateModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
   <div class="bg-zinc-900 border border-zinc-800 w-full max-w-lg rounded-3xl p-6 md:p-8 shadow-2xl relative overflow-hidden">
     <!-- Glow -->
     <div class="absolute top-0 right-0 w-64 h-64 bg-volt/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none"></div>
     
     <h2 class="text-2xl font-black text-white mb-6 flex items-center gap-3 relative z-10">
-      <lucide-icon [img]="icons.Plus" class="w-6 h-6 text-volt"></lucide-icon>
-      Ajouter une Séance
+      <lucide-icon [img]="isEditing ? icons.Edit : icons.Plus" class="w-6 h-6 text-volt"></lucide-icon>
+      {{ isEditing ? 'Modifier la Séance' : 'Ajouter une Séance' }}
     </h2>
 
     <form (ngSubmit)="onSubmitCreate()" #createForm="ngForm" class="space-y-4 relative z-10">
@@ -171,7 +180,7 @@
         </button>
         <button type="submit" [disabled]="!createForm.form.valid"
                 class="px-5 py-2.5 rounded-xl font-bold bg-volt text-black hover:bg-[#b8e53c] disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
-          Créer la Séance
+          {{ isEditing ? 'Enregistrer' : 'Créer la Séance' }}
         </button>
       </div>
     </form>
@@ -188,31 +197,28 @@
     <h2 class="text-xl font-black text-white mb-1 pr-8 leading-tight">Membres Inscrits</h2>
     <p class="text-volt text-sm font-bold mb-6">{{ selectedActivity?.name }} - {{ selectedActivity?.dateTime | date:'dd/MM HH:mm' }}</p>
 
-    <!-- Zone contenant les participants (Backend API à développer par la suite) -->
+    <!-- Zone contenant les participants (Backend API appelé dynamiquement) -->
     <div class="space-y-3 max-h-[60vh] overflow-y-auto pr-2 custom-scrollbar">
       
-      <!-- Boucle sur les mock participants pour le design -->
-      <div *ngFor="let p of mockParticipants" class="flex items-center gap-4 p-3 rounded-xl bg-zinc-950 border border-zinc-800">
+      <div *ngIf="isLoadingParticipants" class="text-center py-4 text-dim-gray font-medium">
+        Récupération des données...
+      </div>
+      
+      <div *ngIf="!isLoadingParticipants && participants.length === 0" class="text-center py-4 text-zinc-500 italic text-sm border-t border-zinc-800/50 mt-2 pt-4">
+        Aucun inscrit ou route backend /api/activities/{{selectedActivity?.id}}/members indisponible (404/403).
+      </div>
+      
+      <!-- Boucle sur les vrais participants -->
+      <div *ngFor="let p of participants" class="flex items-center gap-4 p-3 rounded-xl bg-zinc-950 border border-zinc-800">
         <div class="w-10 h-10 rounded-full bg-stone-800 flex items-center justify-center font-bold text-volt">
-          {{ p.name.charAt(0) }}
+          {{ p.firstName?.charAt(0) || p.name?.charAt(0) || p.accountUsername?.charAt(0) || '?' }}
         </div>
         <div class="flex-1">
-          <h4 class="font-bold text-white text-sm">{{ p.name }}</h4>
-          <span class="text-xs text-dim-gray">{{ p.email }}</span>
-        </div>
-        <div>
-          <span class="text-[10px] uppercase font-bold px-2 py-1 rounded bg-zinc-800 text-stone-300 border border-zinc-700">
-            {{ p.level }}
-          </span>
+          <h4 class="font-bold text-white text-sm">{{ p.firstName || p.name || p.accountUsername || 'Nom Inconnu' }}</h4>
+          <span class="text-xs text-dim-gray">{{ p.email || p.accountUsername || 'Email inconnu' }}</span>
         </div>
       </div>
 
-    </div>
-    
-    <div class="mt-4 pt-4 border-t border-zinc-800">
-      <div class="bg-blue-900/20 border border-blue-900/50 rounded-lg p-3 text-xs text-blue-400 font-medium">
-        ℹ️ <b>Info Dév :</b> La récupération réelle des inscrits nécessite l'ajout d'une route Backend <code>GET /api/activities/{{selectedActivity?.id}}/members</code>. Ces données sont des maquettes pour le design.
-      </div>
     </div>
   </div>
 </div>

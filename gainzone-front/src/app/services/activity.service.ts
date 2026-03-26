@@ -18,4 +18,20 @@ export class ActivityService {
   joinActivity(id: number): Observable<Activity> {
     return this.http.post<Activity>(`${this.apiUrl}/${id}/join`, {});
   }
+
+  createActivity(activity: any): Observable<Activity> {
+    return this.http.post<Activity>(this.apiUrl, activity);
+  }
+
+  updateActivity(id: number, activity: any): Observable<Activity> {
+    return this.http.put<Activity>(`${this.apiUrl}/${id}`, activity);
+  }
+
+  deleteActivity(id: number): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/${id}`);
+  }
+
+  getMembersByActivityId(id: number): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/${id}/members`);
+  }
 }
