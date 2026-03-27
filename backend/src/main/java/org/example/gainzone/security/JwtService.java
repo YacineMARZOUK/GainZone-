@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
+import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.Date;
 import java.util.HashMap;
@@ -18,9 +19,9 @@ import java.util.function.Function;
 @Service
 public class JwtService {
 
-    @Value("${application.security.jwt.secret-key:404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970}")
+    @Value("${JWT_SECRET:R2FpblpvbmVfU2VjdXJlX0pXVF9TZWNyZXRfS2V5XzIwMjZfU3VwZXJfTG9uZ19BbmRfU2VjdXJlX0Jhc2U2NF9FbmNvZGVk}")
     private String secretKey;
-    
+
     @Value("${application.security.jwt.expiration:86400000}") // 24 heures par défaut
     private long jwtExpiration;
 
@@ -44,8 +45,7 @@ public class JwtService {
     private String buildToken(
             Map<String, Object> extraClaims,
             UserDetails userDetails,
-            long expiration
-    ) {
+            long expiration) {
         return Jwts
                 .builder()
                 .setClaims(extraClaims)
@@ -79,7 +79,8 @@ public class JwtService {
     }
 
     private Key getSignInKey() {
-        byte[] keyBytes = Decoders.BASE64.decode(secretKey);
+        // Use raw UTF-8 bytes to avoid Base64 decoding errors
+        byte[] keyBytes = secretKey.getBytes(StandardCharsets.UTF_8);
         return Keys.hmacShaKeyFor(keyBytes);
     }
 }
