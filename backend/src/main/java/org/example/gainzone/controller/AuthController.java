@@ -9,6 +9,7 @@ import org.example.gainzone.service.AuthenticationService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+@CrossOrigin(origins = "http://localhost")
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor

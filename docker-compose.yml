@@ -1,0 +1,54 @@
+services:
+  db:
+    image: postgres:15-alpine
+    container_name: gainzone-db
+    environment:
+      POSTGRES_DB: GainZone
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-0000}
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d GainZone"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - gainzone-network
+
+  backend:
+    build: ./backend
+    container_name: gainzone-backend
+    depends_on:
+      db:
+        condition: service_healthy
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/GainZone
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD:-0000}
+      JWT_SECRET: ${JWT_SECRET:-GainZone_2026_Super_Secret_Key_For_Security_Verification_998877!!}
+    ports:
+      - "8081:8081"
+    networks:
+      - gainzone-network
+
+  frontend:
+    build: ./gainzone-front
+    container_name: gainzone-frontend
+    depends_on:
+      - backend
+    ports:
+      - "80:80"
+    networks:
+      - gainzone-network
+
+networks:
+  gainzone-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
