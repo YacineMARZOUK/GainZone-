@@ -27,7 +27,7 @@ services:
     extra_hosts:
       - "host.docker.internal:host-gateway"
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/gainzone
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/GainZone
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD:-0000}
       JWT_SECRET: ${JWT_SECRET:-GainZone_2026_Super_Secret_Key_For_Security_Verification_998877!!}
