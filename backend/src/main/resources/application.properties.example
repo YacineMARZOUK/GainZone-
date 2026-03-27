@@ -1,7 +1,8 @@
 spring.datasource.url=jdbc:postgresql://localhost:5432/GainZone
 spring.datasource.username=postgres
-spring.datasource.password=0000
+spring.datasource.password=${DB_PASSWORD:votre_mot_de_passe}
 spring.datasource.driver-class-name=org.postgresql.Driver
+application.jwt.secret=${JWT_SECRET:votre_cle_secrete_très_longue_générique}
 server.port=8081
 
 # Hibernate properties
