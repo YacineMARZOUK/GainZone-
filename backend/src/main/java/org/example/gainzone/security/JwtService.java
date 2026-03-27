@@ -3,7 +3,6 @@ package org.example.gainzone.security;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -19,11 +18,8 @@ import java.util.function.Function;
 @Service
 public class JwtService {
 
-    @Value("${JWT_SECRET:R2FpblpvbmVfU2VjdXJlX0pXVF9TZWNyZXRfS2V5XzIwMjZfU3VwZXJfTG9uZ19BbmRfU2VjdXJlX0Jhc2U2NF9FbmNvZGVk}")
+    @Value("${JWT_SECRET:GainZone_Super_Secret_Key_2026_Secure_And_Long_Enough_For_HS256_Signature}")
     private String secretKey;
-
-    @Value("${application.security.jwt.expiration:86400000}") // 24 heures par défaut
-    private long jwtExpiration;
 
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
@@ -39,19 +35,11 @@ public class JwtService {
     }
 
     public String generateToken(Map<String, Object> extraClaims, UserDetails userDetails) {
-        return buildToken(extraClaims, userDetails, jwtExpiration);
-    }
-
-    private String buildToken(
-            Map<String, Object> extraClaims,
-            UserDetails userDetails,
-            long expiration) {
-        return Jwts
-                .builder()
+        return Jwts.builder()
                 .setClaims(extraClaims)
                 .setSubject(userDetails.getUsername())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + expiration))
+                .setExpiration(new Date(System.currentTimeMillis() + 86400000))
                 .signWith(getSignInKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
@@ -70,8 +58,7 @@ public class JwtService {
     }
 
     private Claims extractAllClaims(String token) {
-        return Jwts
-                .parserBuilder()
+        return Jwts.parserBuilder()
                 .setSigningKey(getSignInKey())
                 .build()
                 .parseClaimsJws(token)
@@ -79,8 +66,12 @@ public class JwtService {
     }
 
     private Key getSignInKey() {
-        // Use raw UTF-8 bytes to avoid Base64 decoding errors
+        // Force une longueur de 32 octets minimum pour éviter l'erreur 500 de JJWT
         byte[] keyBytes = secretKey.getBytes(StandardCharsets.UTF_8);
+        if (keyBytes.length < 32) {
+            return Keys.hmacShaKeyFor(
+                    (secretKey + "padding_long_enough_32_bytes_security").getBytes(StandardCharsets.UTF_8));
+        }
         return Keys.hmacShaKeyFor(keyBytes);
     }
 }
